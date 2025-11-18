@@ -40,21 +40,21 @@
 
 
 module running_disparity #(
-    parameter CODE_GROUP_WIDTH = 10
+    parameter CG_WIDTH = 10
 ) (
     // INPUT
-    input  wire                        rd_in,       // RD- = 0, RD+ = 1
-    input  wire [CODE_GROUP_WIDTH-1:0] code_group,  // CG entrante
+    input  wire                rd_in,       // RD- = 0, RD+ = 1
+    input  wire [CG_WIDTH-1:0] code_group,  // CG entrante
     // OUTPUT
-    output reg                         rd_out       // RD de salida
+    output reg                 rd_out       // RD de salida
 );
 
   /*
   * Variables internas
   */
   // Se separan en 6 bits y 4 bits para el cálculo
-  wire [5:0] six_bits = code_group_in[9:4];
-  wire [3:0] four_bits = code_group_in[3:0];
+  wire [5:0] six_bits;
+  wire [3:0] four_bits;
 
   // Guardar el RD intermedio
   reg rd_after_six;
@@ -63,6 +63,17 @@ module running_disparity #(
   reg [2:0] ones_count_6b;
   reg [2:0] ones_count_4b;
 
+
+  /*
+  * Assigns auxiliares para variables intermedias
+  */
+  assign six_bits  = code_group[9:4];
+  assign four_bits = code_group[3:0];
+
+
+  /*
+  * Lógica combinacional
+  */
   always @(*) begin
 
     /*
