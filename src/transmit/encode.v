@@ -34,6 +34,9 @@ module encode #(
     output reg  [   CG_WIDTH-1:0] tx_code_group  // CG de 10 bits
 );
 
+  /*
+  * Lógica combinacional
+  */
   always @(*) begin
 
     case ({
