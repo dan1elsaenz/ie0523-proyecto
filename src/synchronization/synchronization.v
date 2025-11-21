@@ -17,7 +17,7 @@ module synchronization #(
 ) (
     // INPUT
     input wire       mr_main_reset, 
-  input wire       clk,
+    input wire       clk,
     input wire       signal_detectCHANGE, 
     input wire       signal_detect, 
     input wire       VALID_PUDI, // Se conecta a PUDR
@@ -48,15 +48,15 @@ module synchronization #(
     SYNC_ACQUIRED_3   = 7'b1000000;
 
   // De momento meintras hago el include de los valores
-  localparam [9:0] COMMA = 10'b0000000001;
-  localparam [9:0] D     = 10'b0000000010;
+  localparam [9:0] COMMA = 10'b110000 0101; // ASUMIENDO CASO IDEAL DE RD+
+  localparam [9:0] D     = 10'b010110 1001;
 
 
   /*
   * Variables internas
   */
   // state actual y próximo state
-  reg [6:0] state, next_state;
+  reg [6:0] state, next_state; // Estado y proximo estado
   reg [1:0] comma_cont; 
   reg [1:0] sync_cont; 
   reg [2:0] bad_cg_cont; 
