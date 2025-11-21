@@ -57,8 +57,6 @@ A partir de esto, el módulo:
 | `tx_oset_indicate`              | Salida  | Señal que indica que el code-group actual se encuentra listo para que `transmit_ordered_set` avance. |
 | `pudr`                          | Salida  | Señal de indicación hacia la PMA de que existe un nuevo code-group disponible en `tx_code_group`.    |
 
----
-
 ## Módulo `transmit_ordered_set`
 
 El módulo `transmit_ordered_set` se encarga de:
