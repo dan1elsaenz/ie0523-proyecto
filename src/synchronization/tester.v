@@ -13,16 +13,41 @@ module probador(
     input wire        rx_even,
     input wire [10:0] SUDI
 
-)
+);
 
 initial begin 
-    PUDI = 10'b110000 0101;
+    // inicializaciones
+    PUDI = 10'b1100000101;
     clk = 0;
-    reset = 0;
+    mr_main_reset = 0;
+    signal_detectCHANGE = 0;
+    signal_detect = 0;
+    VALID_PUDI = 0;
 
-
+    #10
+    mr_main_reset = 1;
+    signal_detectCHANGE = 1; 
+    VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
+    #10 
+
+    // Next_state = COMMA DETECT
+    PUDI  = 10'b0101101001;
+    #10 
+    //next_state =  ACQUIRE_SYNC
+    // drive valid PUDI and a next sample
+    VALID_PUDI = 1;
+    PUDI = 10'b1100000101;
+    // NEXT_STATE = SYNC_ACQUIRE_1 (observer-driven)
 
 
+    #100 $finish;
 
 end
+
+always begin
+    #5 clk = !clk;
+end
+
+
+endmodule 
