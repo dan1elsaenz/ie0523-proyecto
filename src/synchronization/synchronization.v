@@ -48,8 +48,8 @@ module synchronization #(
     SYNC_ACQUIRED_3   = 7'b1000000;
 
   // De momento meintras hago el include de los valores
-  localparam [9:0] COMMA = 10'b110000 0101; // ASUMIENDO CASO IDEAL DE RD+
-  localparam [9:0] D     = 10'b010110 1001;
+  localparam [9:0] COMMA = 10'b1100000101; // ASUMIENDO CASO IDEAL DE RD+
+  localparam [9:0] D     = 10'b0101101001;
 
 
   /*
