@@ -19,18 +19,16 @@ Ahora, para la máguina de estados se tienen planteados los siguientes estados, 
 
 Estado | Codificación del estado |
 :------:|:--------------------------:|
-Link failed | 000000001
-Wait for K | 000000010
-Rx_K | 000000100
-Idle_D | 000001000
-Start | 000010000
-Receive | 000100000
-Rd_data | 001000000
-TRR_Extend | 010000000
-TRI_RRI | 100000000
+Link failed | 00000001
+Wait for K | 00000010
+Rx_K | 00000100
+Idle_D | 00001000
+Start | 00010000
+Receive | 00100000
+TRR_Extend | 01000000
+TRI_RRI | 10000000
 
 
 Para el bloque de recepción se utilizará la máquina de estados que se presenta en el siguiente diagrama asm.
 
 ![receive_block](images/receive_asm.png)
-
