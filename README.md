@@ -10,14 +10,14 @@ En este repositorio se encuentra el proyecto del curso de **IE0523: Sistemas Dig
 
 ### Descripción
 
-El proyecto consiste de la implementación de la capa PCS (_Physical Coding Sublayer_) para 1000BASE-X (Capa física para 1 Gb/s).
+El proyecto consiste de la implementación de la capa PCS (_Physical Coding Sublayer_) para 1000BASE-X (Capa física para 1 Gb/s), desarrollado a partir de la cláusula 36 del estándar IEEE 802.3.
 Específicamente, se implementaron las siguientes máquinas de estado:
 
-- `TRANSMIT`
-- `RECEIVE`
-- `SYNCHRONIZATION`
+- [`TRANSMIT`](docs/TRANSMIT.md)
+- [`RECEIVE`](docs/RECEIVE.md)
+- [`SYNCHRONIZATION`](docs/SYNCHRONIZATION.md)
 
-Estas fueron conectadas en una estructura _loopback_ para la realización de las pruebas.
+Estas serán conectadas en una estructura _loopback_ para la realización de las pruebas conjuntas.
 
 ### Estructura del proyecto
 
