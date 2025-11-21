@@ -107,7 +107,7 @@ module transmit_ordered_set #(
 
           if (tx_oset_indicate) prox_estado = EPD;
         end
-      end  // TX_DATA
+      end  // TX_PACKET
 
       /*
       * EPD
