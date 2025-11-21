@@ -61,7 +61,8 @@ module tester_receive (
         #10 sudi = {`K29_7_10B_RD_N, 1'b0}; // T
         #10 sudi = {`K23_7_10B_RD_P, 1'b1}; // R
         #10 sudi = {`K28_5_10B_RD_N, 1'b0}; // I
-
+        
+        //Prueba en donde se obtiene un /T/R/R/
         #10 sync_status = 1;
         #10 sudi = {`K28_5_10B_RD_N, 1'b1};  // K28.5 RD- (Idle)
         #10 sudi = {`K28_5_10B_RD_P, 1'b1};  // K28.5 RD+ (Idle)
