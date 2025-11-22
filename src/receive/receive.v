@@ -144,6 +144,8 @@ module receive (
                 else if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
                     (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
                     (check_end[9:0] == `K23_7_10B_RD_P || check_end[9:0] == `K23_7_10B_RD_N)) begin
+                    rx_dv = 1'b1;
+                    rxd = decoded_octet;
                     next_state = TRR_EXTEND;
                 end
                 // Si no es ninguno de los anteriores
