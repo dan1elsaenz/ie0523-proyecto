@@ -143,8 +143,17 @@ module synchronization #(
         good_cg_cont <= good_cg_cont + 1; 
         rx_even <= !rx_even; 
         SUDI <= {PUDI, rx_even}; 
-        good_cg_cont <= 0; 
       end      
+
+      // Reseteo de contadores de cg_bad y cg_good
+      if (bad_cg_cont == 3'b100) begin 
+        bad_cg_cont <= 3'b100;
+      end
+
+      if (good_cg_cont == 2'b11) begin 
+        good_cg_cont <= 2'b11;
+      end
+
 
     end
 
