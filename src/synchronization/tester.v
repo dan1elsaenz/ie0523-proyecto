@@ -31,29 +31,112 @@ initial begin
     VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
     #20
-    // Next_state = COMMA DETECT
+    // Next_state = COMMA DETECT 
     PUDI  = 10'b0101101001; // D
-
     #10
-    //next_state =  COMMA_DETECT
+    // comma_cont = 1
     PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1 
- 
-    #10
-    PUDI  = 10'b0101101001; // D
-
-    #10
     //next_state =  COMMA_DETECT
-    PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1 
     #10
     PUDI  = 10'b0101101001; // D
 
     #10
+    // comma_cont = 2
+    PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
+    #10
+    PUDI  = 10'b0101101001; // D
+    #10
+    // comma_cont = 3
     PUDI = 10'b1100000101;
     // NEXT_STATE = SYNC_ACQUIRE_1 
 
+
+
+    #20
+    mr_main_reset = 0;
+    signal_detectCHANGE = 0;
+    signal_detect = 0;
+    #15
+    mr_main_reset = 1;
+    signal_detectCHANGE = 1; 
+    VALID_PUDI = 1; 
+    signal_detect = 1;
+        // entrar al estado de Loss_of_sync
+    #20
+    // Next_state = COMMA DETECT 
+    PUDI  = 10'b0101101001; // D
+    #10
+    // comma_cont = 1
+    PUDI = 10'b1100000101;
+    //next_state =  COMMA_DETECT
+    #10
+    PUDI  = 10'b0101101001; // D
+
+    #10
+    // comma_cont = 2
+    PUDI = 10'b1100000101;
+    //next_state =  COMMA_DETECT
+    #10
+    PUDI  = 10'b0101101001; // D
+    #10
+    // comma_cont = 3
+    PUDI = 10'b1100000101;
+    // NEXT_STATE = SYNC_ACQUIRE_1 
+    #10
+    PUDI  = 10'b0101101001; // D
+    #20 
+    PUDI = 10'b1111111111;
+    VALID_PUDI =0; 
+    // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE 
+    // #80
+    // mr_main_reset = 0;
+    // signal_detectCHANGE = 0;
+    // signal_detect = 0;
+    // #15
+    // mr_main_reset = 1;
+    // signal_detectCHANGE = 1; 
+    // VALID_PUDI = 1; 
+    // signal_detect = 1;
+    //     // entrar al estado de Loss_of_sync
+    // #20
+    // // Next_state = COMMA DETECT 
+    // PUDI  = 10'b0101101001; // D
+    // #10
+    // // comma_cont = 1
+    // PUDI = 10'b1100000101;
+    // //next_state =  COMMA_DETECT
+    // #10
+    // PUDI  = 10'b0101101001; // D
+
+    // #10
+    // // comma_cont = 2
+    // PUDI = 10'b1100000101;
+    // //next_state =  COMMA_DETECT
+    // #10
+    // PUDI  = 10'b0101101001; // D
+    // #10
+    // // comma_cont = 3
+    // PUDI = 10'b1100000101;
+    // // NEXT_STATE = SYNC_ACQUIRE_1 
+    // #10
+    // PUDI  = 10'b0101101001; // D
+    // #20 
+    // PUDI = 10'b1111111111;
+    // VALID_PUDI = 0; 
+    // // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE
+    // #30
+    // VALID_PUDI = 1;
+    // #10
+    // // comma_cont = 1
+    // PUDI = 10'b1100000101;
+    // //next_state =  COMMA_DETECT
+    // #10
+    // PUDI  = 10'b0101101001; // D
+    
+    
+
+    // #80
 
     #100 $finish;
 
