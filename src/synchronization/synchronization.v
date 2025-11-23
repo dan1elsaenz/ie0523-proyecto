@@ -72,15 +72,23 @@ module synchronization #(
   /*
   * Lógica secuencial
   */
-  always @(posedge clk) begin
+  always @(posedge clk or posedge mr_main_reset) begin
     if (!mr_main_reset) begin
       // state inicial
       state <= IDLE;
+      bad_cg_cont   <= 0; 
+      comma_cont    <= 0; 
+      sync_cont     <= 0;
+      good_cg_cont  <= 0; 
+      loss_sync     <= 0;
+      rx_even       <= 0;
+      VALID_SIGNAL  <= 0; 
 
     end else begin
       // Actualizar al próximo state
       state <= next_state;
-
+      cg <= VALID_PUDI;
+  
 
       VALID_SIGNAL <= (VALID_PUDI || signal_detect);
       loss_sync <= (signal_detectCHANGE && VALID_PUDI);
@@ -102,9 +110,13 @@ module synchronization #(
 
      //Asignacion de parametros en el estado de ACQUIRE_SYNC
       if (state == ACQUIRE_SYNC) begin 
+
         sync_cont <= sync_cont + 1; 
         rx_even <= !rx_even;
         SUDI <= {PUDI, rx_even}; 
+        if (rx_even == 0 && PUDI == COMMA) begin 
+          comma_cont <= comma_cont + 1;
+        end 
       end else if (state == ACQUIRE_SYNC && cg == 1) begin 
         sync_cont <= sync_cont - 1; 
       end
@@ -195,22 +207,17 @@ module synchronization #(
       */
 
       ACQUIRE_SYNC: begin 
-        if (!cg) begin 
+        if (cg == 1) begin 
           if (VALID_PUDI || PUDI == COMMA) begin 
-            if (rx_even) begin 
-              next_state = LOSS_OF_SYNC;
-            end else begin
               if (comma_cont == 2'b11 && sync_cont == 2'b10) begin 
                 next_state = SYNC_ACQUIRED_1;
               end else begin 
                 next_state = COMMA_DETECT;
               end 
-            end
-          end else begin 
+            end else begin 
             next_state = ACQUIRE_SYNC; 
           end 
-
-        end else begin 
+        end else if (cg == 0) begin 
           next_state = LOSS_OF_SYNC;
         end 
       end //ACQUIRE_SYNC
@@ -222,9 +229,9 @@ module synchronization #(
       */
 
       SYNC_ACQUIRED_1: begin
-        if (cg) begin 
+        if (cg == 1) begin 
           next_state = SYNC_ACQUIRED_1;
-        end else begin
+        end else if (cg == 0) begin
           next_state = SYNC_ACQUIRED_2;  
         end
       end // SYNC_ACQUIRED
