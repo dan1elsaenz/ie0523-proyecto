@@ -23,22 +23,36 @@ initial begin
     signal_detectCHANGE = 0;
     signal_detect = 0;
     VALID_PUDI = 0;
-
     #10
+
+    
     mr_main_reset = 1;
     signal_detectCHANGE = 1; 
     VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
-    #10 
-
+    #20
     // Next_state = COMMA DETECT
-    PUDI  = 10'b0101101001;
-    #10 
-    //next_state =  ACQUIRE_SYNC
-    // drive valid PUDI and a next sample
-    VALID_PUDI = 1;
+    PUDI  = 10'b0101101001; // D
+
+    #10
+    //next_state =  COMMA_DETECT
     PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1 (observer-driven)
+    // NEXT_STATE = SYNC_ACQUIRE_1 
+ 
+    #10
+    PUDI  = 10'b0101101001; // D
+
+    #10
+    //next_state =  COMMA_DETECT
+    PUDI = 10'b1100000101;
+    // NEXT_STATE = SYNC_ACQUIRE_1 
+    #10
+    PUDI  = 10'b0101101001; // D
+
+    #10
+    //next_state =  COMMA_DETECT
+    PUDI = 10'b1100000101;
+    // NEXT_STATE = SYNC_ACQUIRE_1 
 
 
     #100 $finish;
