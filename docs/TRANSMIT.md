@@ -18,7 +18,7 @@ En este documento, se muestra la documentación realizada para el módulo `trans
 ## Diagrama arquitectónico del transmisor
 
 <p align="center">
-    <img src="./images/diagrama-bloques-transmisor.png" width="900px" alt="Diagrama bloques transmisor">
+    <img src="./images/transmit_block_diagram.png" width="900px" alt="Diagrama bloques transmisor">
 </p>
 
 ## Módulo `transmit_code_group`
