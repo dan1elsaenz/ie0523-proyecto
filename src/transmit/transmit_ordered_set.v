@@ -7,6 +7,9 @@
 * - Fecha       : 05-12-2025
 *
 * - Descripción :
+*   Máquina de estadaos de transmit ordered set, descrita en la cláusula 36
+*   del estándar IEEE 802.3 de la capa PCS de Ethernet. Genera las señales de
+*   tx_o_set que son enviadas al transmit_code_group para codificar el octeto.
 *
 * =============================================================================
 */
@@ -16,6 +19,7 @@
  * Archivos incluidos
  */
 `include "../constants/tx_o_set_constants.v"
+
 
 module transmit_ordered_set #(
     parameter integer TX_O_SET_WIDTH = 5
@@ -124,7 +128,7 @@ module transmit_ordered_set #(
           // Ciclo impar: No se hace
           prox_estado = XMIT_DATA;
         end
-      end  // EPD2_NOEXT
+      end  // EPD
 
       /*
       * default

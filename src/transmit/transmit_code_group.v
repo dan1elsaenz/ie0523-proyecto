@@ -7,6 +7,11 @@
 * - Fecha       : 05-12-2025
 *
 * - Descripción :
+*   Máquina de estados transmit code group descrita en la cláusula 36 del
+*   estándar IEEE 802.3 de la capa PCS de Ethernet. Se encarga de generar los
+*   code-groups de 10 bits a partir de 8 bits, para los cuales diferencia si
+*   se trata de un ordered-set de control (/K/), de datos (/D/), de IDLE (/I/),
+*   de inicio (/S/), de terminación (/T/) o de carrier extend (/R/).
 *
 * =============================================================================
 */
