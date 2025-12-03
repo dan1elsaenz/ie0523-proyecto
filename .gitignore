@@ -8,3 +8,6 @@
 
 # LaTeX out dir
 out/
+
+# misc
+.DS_Store
