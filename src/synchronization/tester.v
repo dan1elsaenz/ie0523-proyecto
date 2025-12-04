@@ -19,14 +19,13 @@ initial begin
     // inicializaciones
     PUDI = 10'b1100000101;
     clk = 0;
-    mr_main_reset = 0;
     signal_detectCHANGE = 0;
     signal_detect = 0;
     VALID_PUDI = 0;
+    mr_main_reset = 1; 
     #10
+    mr_main_reset = 0;
 
-    
-    mr_main_reset = 1;
     signal_detectCHANGE = 1; 
     VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
@@ -54,11 +53,11 @@ initial begin
 
 
     #20
-    mr_main_reset = 0;
+    mr_main_reset = 1;
     signal_detectCHANGE = 0;
     signal_detect = 0;
     #15
-    mr_main_reset = 1;
+    mr_main_reset = 0;
     signal_detectCHANGE = 1; 
     VALID_PUDI = 1; 
     signal_detect = 1;
@@ -87,8 +86,17 @@ initial begin
     PUDI  = 10'b0101101001; // D
     #20 
     PUDI = 10'b1111111111;
-    VALID_PUDI =0; 
+    VALID_PUDI =0;
+    #25
+    PUDI  = 10'b0101101001; // D
+    VALID_PUDI = 1;
+    
     // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE 
+    
+
+
+
+
     // #80
     // mr_main_reset = 0;
     // signal_detectCHANGE = 0;
