@@ -28,10 +28,10 @@ initial begin
     // entrar al estado de Loss_of_sync
     #20
     // Next_state = COMMA DETECT 
-    PUDI  = 10'b101001_0110:// D
+    PUDI  = 10'b1010010110:// D
     #10
     // comma_cont = 1
-    PUDI = 10'b101001_0110:
+    PUDI = 10'b1010010110:
     //next_state =  COMMA_DETECT
     #10
     PUDI  = 10'b0101101001; // D
@@ -41,7 +41,7 @@ initial begin
     PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
     #10
-    PUDI  = 10'b101001_0110: // D
+    PUDI  = 10'b1010010110: // D
     #10
     // comma_cont = 3
     PUDI = 10'b1100000101;
