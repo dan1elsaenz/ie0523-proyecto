@@ -19,15 +19,12 @@ initial begin
     // inicializaciones
     PUDI = 10'b1100000101;
     clk = 0;
-    signal_detectCHANGE = 0;
-    signal_detect = 0;
     VALID_PUDI = 0;
     mr_main_reset = 1; 
     #10
     mr_main_reset = 0;
 
-    signal_detectCHANGE = 1; 
-    VALID_PUDI = 1; 
+       VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
     #20
     // Next_state = COMMA DETECT 
@@ -54,13 +51,10 @@ initial begin
 
     #20
     mr_main_reset = 1;
-    signal_detectCHANGE = 0;
-    signal_detect = 0;
+
     #15
     mr_main_reset = 0;
-    signal_detectCHANGE = 1; 
     VALID_PUDI = 1; 
-    signal_detect = 1;
         // entrar al estado de Loss_of_sync
     #20
     // Next_state = COMMA DETECT 
