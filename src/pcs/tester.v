@@ -100,7 +100,7 @@ module tester #(
     txd = 0;
 
     // Ciclos intermedios
-    ciclos(7);
+    ciclos(8);
 
     /*
     * Prueba 2: Sin carrier extend y IDLE disparity WRONG
