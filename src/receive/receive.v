@@ -24,14 +24,14 @@
 
 module receive (
     // INPUT
-    input            rx_clk,        // Reloj de recepción
-    input            mr_main_reset, // Reinicio activo en alto
-    input [10:0]     sudi,          // Serial Unit Data Input (10 bits + paridad)
-    input            sync_status,   // Estado de sincronización
+    input             rx_clk,         // Reloj de recepción
+    input             mr_main_reset,  // Reinicio activo en alto
+    input      [10:0] sudi,           // Serial Unit Data Input (10 bits + paridad)
+    input             sync_status,    // Estado de sincronización
     // OUTPUT
-    output reg [7:0] rxd,           // Dato recibido de 8 bits
-    output reg       rx_dv,         // Indicador de dato válido
-    output reg       rx_er          // Indicador de error
+    output reg [ 7:0] rxd,            // Dato recibido de 8 bits
+    output reg        rx_dv,          // Indicador de dato válido
+    output reg        rx_er           // Indicador de error
 );
 
 
@@ -39,22 +39,22 @@ module receive (
   * Variables internas
   */
   // Extracción de señales desde sudi
-  wire [9:0] rx_code_group;            // Almacena los 10 bits del code-group
-  wire       rx_even;                  // Bit de paridad (ciclo par/impar)
+  wire [ 9:0] rx_code_group;  // Almacena los 10 bits del code-group
+  wire        rx_even;  // Bit de paridad (ciclo par/impar)
 
   // Registro de verificación de fin de paquete
-  reg [29:0] check_end;                // Almacena los últimos 3 code-groups
+  reg  [29:0] check_end;  // Almacena los últimos 3 code-groups
 
   // Salida del decodificador
-  wire [7:0] decoded_octet;            // Octeto decodificado
+  wire [ 7:0] decoded_octet;  // Octeto decodificado
 
   // Running disparity actual y siguiente
-  reg        rx_running_disparity;
-  wire       next_rx_running_disparity;
+  reg         rx_running_disparity;
+  wire        next_rx_running_disparity;
 
   // Asignación de señales de entrada
-  assign rx_code_group = sudi[10:1];   // Asignar los 10 bits de entrada
-  assign rx_even       = sudi[0];      // Asignar el bit de paridad
+  assign rx_code_group = sudi[10:1];  // Asignar los 10 bits de entrada
+  assign rx_even       = sudi[0];  // Asignar el bit de paridad
 
 
   /*
@@ -85,13 +85,13 @@ module receive (
   * Hot-One Encoding para evitar carreras de estado
   */
   localparam LINK_FAILED = 8'b00000001;
-  localparam WAIT_FOR_K  = 8'b00000010;
-  localparam RX_K        = 8'b00000100;
-  localparam IDLE_D      = 8'b00001000;
-  localparam START       = 8'b00010000;
-  localparam RECEIVE     = 8'b00100000;
-  localparam TRR_EXTEND  = 8'b01000000;
-  localparam TRI_RRI     = 8'b10000000;
+  localparam WAIT_FOR_K = 8'b00000010;
+  localparam RX_K = 8'b00000100;
+  localparam IDLE_D = 8'b00001000;
+  localparam START = 8'b00010000;
+  localparam RECEIVE = 8'b00100000;
+  localparam TRR_EXTEND = 8'b01000000;
+  localparam TRI_RRI = 8'b10000000;
 
   // Estado actual y próximo estado
   reg [7:0] state, next_state;
@@ -212,9 +212,9 @@ module receive (
         * la secuencia de inicio 0x55 (01010101)
         */
         START: begin
-          rx_dv      = 1'b1;       // Se enciende la salida de dato válido
+          rx_dv      = 1'b1;  // Se enciende la salida de dato válido
           rxd        = 8'b0101_0101;  // Se manda la siguiente secuencia de datos
-          next_state = RECEIVE;    // Se envía al estado de recibido
+          next_state = RECEIVE;  // Se envía al estado de recibido
         end  // START
 
         /*
@@ -256,7 +256,7 @@ module receive (
         * Activa señal de error y envía código 0x0F
         */
         TRR_EXTEND: begin
-          rx_er      = 1'b1;       // Se activa la señal de error
+          rx_er      = 1'b1;  // Se activa la señal de error
           rxd        = 8'b0000_1111;  // Se envía la siguiente señal de 8 bits por la salida
           next_state = TRI_RRI;
         end  // TRR_EXTEND
