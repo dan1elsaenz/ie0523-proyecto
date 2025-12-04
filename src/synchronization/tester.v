@@ -17,7 +17,7 @@ module probador(
 
 initial begin 
     // inicializaciones
-    PUDI = 
+    PUDI = 10'b010001_0111;
     clk = 0;
     VALID_PUDI = 0;
     mr_main_reset = 1; 
