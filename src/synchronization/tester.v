@@ -41,7 +41,7 @@ initial begin
     PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
     #10
-    PUDI  = 10'b1010010110: // D
+    PUDI  = 10'b1010010110; // D
     #10
     // comma_cont = 3
     PUDI = 10'b1100000101;
