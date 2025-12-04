@@ -1,11 +1,14 @@
-module probador(
+`include "../constants/code_group_constants.v"
 
-    output reg       mr_main_reset, 
+
+module probador (
+
+    output reg       mr_main_reset,
     output reg       clk,
-    output reg       signal_detectCHANGE, 
-    output reg       signal_detect, 
-    output reg       VALID_PUDI, // Se conecta a PUDR
-    output reg [9:0] PUDI,  // Se conecta al code_group
+    output reg       signal_detectCHANGE,
+    output reg       signal_detect,
+    output reg       VALID_PUDI,           // Se conecta a PUDR
+    output reg [9:0] PUDI,                 // Se conecta al code_group
 
 
 
@@ -15,78 +18,101 @@ module probador(
 
 );
 
-initial begin 
+  initial begin
     // inicializaciones
-    PUDI = 10'b110000_0101;
-    clk = 0;
+    PUDI = '0;
+    clk  = 0;
+    #5;
+
     VALID_PUDI = 0;
-    mr_main_reset = 1; 
-    #10
-    mr_main_reset = 0;
+    mr_main_reset = 1;
+    #10 mr_main_reset = 0;
+    #10;
 
-       VALID_PUDI = 1; 
-    // entrar al estado de Loss_of_sync
-    #30
-    // Next_state = COMMA DETECT 
-    PUDI  = 10'b1010010110;// D
+    /*
+    * COMMA
+    */
+    VALID_PUDI = 1;
+    PUDI = `K28_5_10B_RD_N;
+    #10;
+
+    VALID_PUDI = 1;
+    PUDI = `D16_2_10B_RD_P;
+    #10;
+
+    /*
+    * COMMA
+    */
+    VALID_PUDI = 1;
+    PUDI = `K28_5_10B_RD_N;
+    #10;
+
+    VALID_PUDI = 1;
+    PUDI = `D16_2_10B_RD_P;
+    #10;
+
+    /*
+    * COMMA
+    */
+    VALID_PUDI = 1;
+    PUDI = `K28_5_10B_RD_N;
+    #10;
+
+    VALID_PUDI = 1;
+    PUDI = `D16_2_10B_RD_P;
+    #10;
+
+    // Next_state = COMMA DETECT
+    PUDI = 10'b1010010110;  // D
     #10
     // comma_cont = 1
     PUDI = 10'b110000_0101;
     //next_state =  COMMA_DETECT
-    #10
-    PUDI  = 10'b0101101001; // D
+    #10 PUDI = 10'b0101101001;  // D
 
     #10
     // comma_cont = 2
     PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
-    #10
-    PUDI  = 10'b1010010110; // D
+    #10 PUDI = 10'b1010010110;  // D
     #10
     // comma_cont = 3
     PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1 
+    // NEXT_STATE = SYNC_ACQUIRE_1
 
 
 
+    #20 mr_main_reset = 1;
+
+    #15 mr_main_reset = 0;
+    VALID_PUDI = 1;
+    // entrar al estado de Loss_of_sync
     #20
-    mr_main_reset = 1;
-
-    #15
-    mr_main_reset = 0;
-    VALID_PUDI = 1; 
-        // entrar al estado de Loss_of_sync
-    #20
-    // Next_state = COMMA DETECT 
-    PUDI  = 10'b0101101001; // D
+    // Next_state = COMMA DETECT
+    PUDI = 10'b0101101001;  // D
     #10
     // comma_cont = 1
     PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
-    #10
-    PUDI  = 10'b0101101001; // D
+    #10 PUDI = 10'b0101101001;  // D
 
     #10
     // comma_cont = 2
     PUDI = 10'b1100000101;
     //next_state =  COMMA_DETECT
-    #10
-    PUDI  = 10'b0101101001; // D
+    #10 PUDI = 10'b0101101001;  // D
     #10
     // comma_cont = 3
     PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1 
-    #10
-    PUDI  = 10'b0101101001; // D
-    #20 
-    PUDI = 10'b1111111111;
-    VALID_PUDI =0;
-    #25
-    PUDI  = 10'b0101101001; // D
+    // NEXT_STATE = SYNC_ACQUIRE_1
+    #10 PUDI = 10'b0101101001;  // D
+    #20 PUDI = 10'b1111111111;
+    VALID_PUDI = 0;
+    #25 PUDI = 10'b0101101001;  // D
     VALID_PUDI = 1;
-    
-    // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE 
-    
+
+    // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE
+
 
 
 
@@ -97,12 +123,12 @@ initial begin
     // signal_detect = 0;
     // #15
     // mr_main_reset = 1;
-    // signal_detectCHANGE = 1; 
-    // VALID_PUDI = 1; 
+    // signal_detectCHANGE = 1;
+    // VALID_PUDI = 1;
     // signal_detect = 1;
     //     // entrar al estado de Loss_of_sync
     // #20
-    // // Next_state = COMMA DETECT 
+    // // Next_state = COMMA DETECT
     // PUDI  = 10'b0101101001; // D
     // #10
     // // comma_cont = 1
@@ -120,12 +146,12 @@ initial begin
     // #10
     // // comma_cont = 3
     // PUDI = 10'b1100000101;
-    // // NEXT_STATE = SYNC_ACQUIRE_1 
+    // // NEXT_STATE = SYNC_ACQUIRE_1
     // #10
     // PUDI  = 10'b0101101001; // D
-    // #20 
+    // #20
     // PUDI = 10'b1111111111;
-    // VALID_PUDI = 0; 
+    // VALID_PUDI = 0;
     // // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE
     // #30
     // VALID_PUDI = 1;
@@ -135,18 +161,18 @@ initial begin
     // //next_state =  COMMA_DETECT
     // #10
     // PUDI  = 10'b0101101001; // D
-    
-    
+
+
 
     // #80
 
     #100 $finish;
 
-end
+  end
 
-always begin
+  always begin
     #5 clk = !clk;
-end
+  end
 
 
-endmodule 
+endmodule

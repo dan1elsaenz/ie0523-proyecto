@@ -21,30 +21,40 @@ GTKW       := layout.gtkw
 # Configuración del layout de GTKWave
 define LAYOUT
 [timestart] 0
-[size] 1352 746
-[pos] -1 -1
-*-5.827720 215 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1434 835
+[pos] 2 2
+*-5.827720 50 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] Controlador_tb.
 [sst_width] 278
 [signals_width] 250
 [sst_expanded] 1
-[sst_vpaned_height] 208
+[sst_vpaned_height] 238
+@28
+Controlador_tb.U0.clk
+[color] 1
+Controlador_tb.U0.mr_main_reset
+@22
+[color] 2
+Controlador_tb.U0.state[6:0]
+@200
+-
+@28
+Controlador_tb.U0.code_sync_status
 @22
 [color] 2
 Controlador_tb.U0.PUDI[9:0]
 [color] 2
 Controlador_tb.U0.SUDI[10:0]
-[color] 2
-Controlador_tb.U0.state[6:0]
 @28
-[color] 1
-Controlador_tb.U0.mr_main_reset
 [color] 5
 Controlador_tb.U0.comma_PUDI
 [color] 5
 Controlador_tb.U0.PUDI_INVALID
 [color] 5
 Controlador_tb.U0.cg
+@200
+-
+@28
 [color] 3
 Controlador_tb.U0.comma_cont[1:0]
 [color] 3
