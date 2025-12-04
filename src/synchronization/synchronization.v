@@ -37,6 +37,7 @@ wire D_PUDI;
 
 
 PUDI_checker u1 (
+        .PUDI(PUDI),
         .PUDI_INVALID(PUDI_INVALID), 
         .comma_PUDI(comma_PUDI),
         .D_PUDI(D_PUDI)
