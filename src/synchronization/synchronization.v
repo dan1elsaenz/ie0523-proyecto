@@ -11,7 +11,7 @@
 * =============================================================================
 */
 
-`include "PUDI_checker"
+`include "PUDI_checker.v" 
 module synchronization #(
     parameter integer param = 1
 ) (
@@ -31,6 +31,17 @@ module synchronization #(
 
 );
 
+wire PUDI_INVALID;
+wire comma_PUDI;
+wire D_PUDI;
+
+
+PUDI_checker u1 (
+        .PUDI_INVALID(PUDI_INVALID), 
+        .comma_PUDI(comma_PUDI),
+        .D_PUDI(D_PUDI)
+    );
+
 
   /*
   * Asignación de states
@@ -45,10 +56,6 @@ module synchronization #(
     SYNC_ACQUIRED_2   = 7'b0100000,
     SYNC_ACQUIRED_3   = 7'b1000000;
 
-  // De momento meintras hago el include de los valores
-  localparam [9:0] COMMA = 10'b1100000101; // ASUMIENDO CASO IDEAL DE RD+
-  localparam [9:0] D     = 10'b0101101001;
-
 
   /*
   * Variables internas
@@ -59,12 +66,11 @@ module synchronization #(
   reg [1:0] sync_cont; 
   reg [2:0] bad_cg_cont; 
   reg [1:0] good_cg_cont; 
-  reg       cg; // cg = 1 -> good_cg | cg = 0 -> bad_cg
   reg       VALID_SIGNAL;
   /*
   * Assigns auxiliares para variables intermedias
   */
-    assing cg = `PUDI_INVALID; 
+  assign cg = PUDI_INVALID; 
 
   /*
   * Lógica secuencial
@@ -109,7 +115,7 @@ module synchronization #(
         sync_cont <= sync_cont + 1; 
         rx_even <= !rx_even;
         SUDI <= {PUDI, rx_even}; 
-        if (rx_even == 0 && PUDI == COMMA) begin 
+        if (rx_even == 0 && PUDI == comma_PUDI) begin 
           comma_cont <= comma_cont + 1;
         end 
       end else if (state == ACQUIRE_SYNC && cg == 1) begin 
@@ -218,7 +224,7 @@ module synchronization #(
       */
       LOSS_OF_SYNC: begin 
         // AGREGAR EL CODIGO DE COMA
-        if (PUDI == COMMA && VALID_SIGNAL) begin 
+        if (PUDI == comma_PUDI && VALID_SIGNAL) begin 
           next_state = COMMA_DETECT;
         end else begin
           next_state = LOSS_OF_SYNC; 
@@ -231,7 +237,7 @@ module synchronization #(
       */
 
       COMMA_DETECT: begin 
-        if (PUDI == D) begin 
+        if (PUDI == D_PUDI) begin 
           next_state = ACQUIRE_SYNC; 
         end else begin 
           next_state = LOSS_OF_SYNC; 
@@ -246,7 +252,7 @@ module synchronization #(
 
       ACQUIRE_SYNC: begin 
         if (cg == 1) begin 
-          if (VALID_PUDI || PUDI == COMMA) begin 
+          if (VALID_PUDI || PUDI == comma_PUDI) begin 
               if (comma_cont == 2'b11 && sync_cont == 2'b10) begin 
                 next_state = SYNC_ACQUIRED_1;
               end else begin 
