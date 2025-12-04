@@ -17,7 +17,7 @@ module probador(
 
 initial begin 
     // inicializaciones
-    PUDI = 10'b010001_0111;
+    PUDI = 10'b0100010111;
     clk = 0;
     VALID_PUDI = 0;
     mr_main_reset = 1; 
@@ -26,7 +26,7 @@ initial begin
 
        VALID_PUDI = 1; 
     // entrar al estado de Loss_of_sync
-    #20
+    #30
     // Next_state = COMMA DETECT 
     PUDI  = 10'b1010010110;// D
     #10
