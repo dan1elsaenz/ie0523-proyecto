@@ -84,14 +84,12 @@ module receive (
   * Asignación de estados
   * Hot-One Encoding para evitar carreras de estado
   */
-  localparam LINK_FAILED = 8'b00000001;
-  localparam WAIT_FOR_K = 8'b00000010;
-  localparam RX_K = 8'b00000100;
-  localparam IDLE_D = 8'b00001000;
-  localparam START = 8'b0001_0000;
-  localparam RECEIVE = 8'b0010_0000;
-  localparam TRR_EXTEND = 8'b01000000;
-  localparam TRI_RRI = 8'b1000_0000;
+  localparam LINK_FAILED = 6'b000001;
+  localparam WAIT_FOR_K = 6'b000010;
+  localparam RX_K = 6'b000100;
+  localparam IDLE_D = 6'b001000;
+  localparam RECEIVE = 6'b010000;
+  localparam TRI_RRI = 6'b100000;
 
   // Estado actual y próximo estado
   reg [7:0] state, next_state;
@@ -203,22 +201,10 @@ module receive (
           end else if (rx_code_group == `K27_7_10B_RD_P || rx_code_group == `K27_7_10B_RD_N) begin
 
             rx_dv      = 1'b1;  // Se enciende la salida de dato válido
-            rxd        = 8'b0101_0101;  // Se manda la siguiente secuencia de datos
+            rxd        = 8'b0101_0101;  // Se manda la secuencia de datos que se envia en START
             next_state = RECEIVE;  // Se envía al estado de recibido
           end
         end  // IDLE_D
-
-        /*
-        * START
-        *
-        * Inicio de paquete detectado. Activa rx_dv y envía
-        * la secuencia de inicio 0x55 (01010101)
-        */
-        START: begin
-          rx_dv      = 1'b1;  // Se enciende la salida de dato válido
-          rxd        = 8'b0101_0101;  // Se manda la siguiente secuencia de datos
-          next_state = RECEIVE;  // Se envía al estado de recibido
-        end  // START
 
         /*
         * RECEIVE
@@ -240,9 +226,10 @@ module receive (
           end else if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
                        (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
                        (check_end[9:0] == `K23_7_10B_RD_P || check_end[9:0] == `K23_7_10B_RD_N)) begin
-            rx_dv      = 1'b1;
-            rxd        = decoded_octet;
-            next_state = TRR_EXTEND;
+            rx_dv      = 0;
+            rx_er      = 1'b1;  // Se activa la señal de error
+            rxd        = 8'b0000_1111;  // Se envía la siguiente señal de 8 bits por la salida
+            next_state = TRI_RRI;
 
             // Si no es ninguno de los anteriores, continuar recibiendo datos
           end else if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N &&
@@ -251,18 +238,6 @@ module receive (
             rxd   = decoded_octet;
           end
         end  // RECEIVE
-
-        /*
-        * TRR_EXTEND
-        *
-        * Extensión de carrier detectada (/T/R/R).
-        * Activa señal de error y envía código 0x0F
-        */
-        TRR_EXTEND: begin
-          rx_er      = 1'b1;  // Se activa la señal de error
-          rxd        = 8'b0000_1111;  // Se envía la siguiente señal de 8 bits por la salida
-          next_state = TRI_RRI;
-        end  // TRR_EXTEND
 
         /*
         * TRI_RRI
