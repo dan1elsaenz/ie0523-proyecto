@@ -37,6 +37,7 @@ wire D_PUDI;
 
 
 PUDI_checker u1 (
+        .PUDI(PUDI),
         .PUDI_INVALID(PUDI_INVALID), 
         .comma_PUDI(comma_PUDI),
         .D_PUDI(D_PUDI)
@@ -67,10 +68,12 @@ PUDI_checker u1 (
   reg [2:0] bad_cg_cont; 
   reg [1:0] good_cg_cont; 
   reg       VALID_SIGNAL;
+  wire       cg; 
+
   /*
   * Assigns auxiliares para variables intermedias
   */
-  assign cg = PUDI_INVALID; 
+  assign cg = ~PUDI_INVALID; 
 
   /*
   * Lógica secuencial
@@ -224,7 +227,7 @@ PUDI_checker u1 (
       */
       LOSS_OF_SYNC: begin 
         // AGREGAR EL CODIGO DE COMA
-        if (PUDI == comma_PUDI && VALID_SIGNAL) begin 
+        if (comma_PUDI && VALID_SIGNAL) begin 
           next_state = COMMA_DETECT;
         end else begin
           next_state = LOSS_OF_SYNC; 
@@ -237,7 +240,7 @@ PUDI_checker u1 (
       */
 
       COMMA_DETECT: begin 
-        if (PUDI == D_PUDI) begin 
+        if (D_PUDI) begin 
           next_state = ACQUIRE_SYNC; 
         end else begin 
           next_state = LOSS_OF_SYNC; 
@@ -252,7 +255,7 @@ PUDI_checker u1 (
 
       ACQUIRE_SYNC: begin 
         if (cg == 1) begin 
-          if (VALID_PUDI || PUDI == comma_PUDI) begin 
+          if (VALID_PUDI || comma_PUDI) begin 
               if (comma_cont == 2'b11 && sync_cont == 2'b10) begin 
                 next_state = SYNC_ACQUIRED_1;
               end else begin 
