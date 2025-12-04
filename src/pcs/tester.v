@@ -84,7 +84,7 @@ module tester #(
     /*
     * Prueba 0: IDLEs (sincronización)
     */
-    ciclos(7);
+    ciclos(15);
 
     /*
     * Prueba 1: Carrier extend y IDLE disparity OK

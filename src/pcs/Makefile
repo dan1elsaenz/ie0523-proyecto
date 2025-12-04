@@ -25,6 +25,53 @@ GTKW       := layout.gtkw
 
 # Configuración del layout de GTKWave
 define LAYOUT
+[timestart] 0
+[size] 1333 834
+[pos] 720 2
+*-6.000000 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[treeopen] testbench.
+[treeopen] testbench.pcs.
+[treeopen] testbench.pcs.transmit.
+[sst_width] 255
+[signals_width] 177
+[sst_expanded] 1
+[sst_vpaned_height] 241
+@28
+testbench.clk
+testbench.mr_main_reset
+@200
+-
+-TRANSMIT
+@22
+testbench.pcs.transmit.cg.octet[7:0]
+testbench.pcs.transmit.tx_code_group[9:0]
+@28
+testbench.pcs.transmit.tx_en
+@22
+testbench.pcs.txd[7:0]
+@200
+-
+-RECEIVE
+@22
+testbench.pcs.receive.state[7:0]
+testbench.pcs.receive.rx_code_group[9:0]
+testbench.pcs.receive.rxd[7:0]
+@28
+testbench.pcs.receive.rx_dv
+testbench.pcs.receive.rx_er
+@200
+-
+-SYNC
+@22
+testbench.pcs.sync.state[6:0]
+@28
+testbench.pcs.sync.rx_even
+testbench.pcs.receive.sync_status
+testbench.pcs.sync.comma_PUDI
+@22
+testbench.pcs.sync.SUDI[10:0]
+[pattern_trace] 1
+[pattern_trace] 0
 endef
 export LAYOUT := $(LAYOUT)
 
