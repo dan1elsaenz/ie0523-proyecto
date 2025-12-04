@@ -21,7 +21,8 @@ module PUDI_checker #(
     input wire [9:0] PUDI,
 
     // Decide si es válido o inválido 
-    output reg PUDI_INVALID, comma_PUDI, D_PUDI; 
+    output reg PUDI_INVALID, comma_PUDI, D_PUDI
+    ); 
     
     always @(*) begin
         // Valores por defecto 
@@ -32,7 +33,7 @@ module PUDI_checker #(
         case (PUDI)
             
             // COMMAs
-            `K28_510B_RD_P : begin
+            `K28_5_10B_RD_P : begin
                 PUDI_INVALID = 1'b0;
                 comma_PUDI   = 1'b1;    
             end
@@ -112,7 +113,7 @@ module PUDI_checker #(
                 PUDI_INVALID = 1'b0; 
                 D_PUDI       = 1'b1;
             end
-            `D21_5_10B_RD_Nb: begin 
+            `D21_5_10B_RD_N: begin 
                 PUDI_INVALID = 1'b0; 
                 D_PUDI       = 1'b1;
             end
@@ -274,4 +275,4 @@ module PUDI_checker #(
             default : PUDI_INVALID = 1'b1; 
         endcase
     end
-    ) endmodule
+ endmodule
