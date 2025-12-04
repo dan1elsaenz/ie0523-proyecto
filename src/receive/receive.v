@@ -18,7 +18,7 @@
  * Archivos incluidos
  */
 `include "../constants/code_group_constants.v"
-`include "decode.v"
+`include "../receive/decode.v"
 `include "../running_disparity/running_disparity.v"
 
 
@@ -63,7 +63,7 @@ module receive (
   // running_disparity calcula el siguiente running_disparity
   running_disparity #(
       .CG_WIDTH(10)
-  ) rd (
+  ) rd2 (
       .rd_in     (rx_running_disparity),
       .code_group(rx_code_group),
       .rd_out    (next_rx_running_disparity)

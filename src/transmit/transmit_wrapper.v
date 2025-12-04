@@ -16,8 +16,8 @@
 /*
  * Archivos incluidos
  */
-`include "transmit_code_group.v"
-`include "transmit_ordered_set.v"
+`include "../transmit/transmit_code_group.v"
+`include "../transmit/transmit_ordered_set.v"
 
 module transmit_wrapper #(
     parameter integer CG_WIDTH = 10,

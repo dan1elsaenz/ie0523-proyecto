@@ -22,7 +22,7 @@
  */
 `include "../constants/code_group_constants.v"
 `include "../constants/tx_o_set_constants.v"
-`include "encode.v"
+`include "../transmit/encode.v"
 `include "../running_disparity/running_disparity.v"
 
 
@@ -87,7 +87,7 @@ module transmit_code_group #(
   // running_disparity calcula el siguiente running_disparity
   running_disparity #(
       .CG_WIDTH(CG_WIDTH)
-  ) rd (
+  ) rd1 (
       .rd_in     (tx_disparity),
       .code_group(tx_code_group),
       .rd_out    (tx_disparity_next)
