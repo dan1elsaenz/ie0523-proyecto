@@ -11,15 +11,13 @@
 * =============================================================================
 */
 
-
+`include "PUDI_checker"
 module synchronization #(
     parameter integer param = 1
 ) (
     // INPUT
     input wire       mr_main_reset, 
     input wire       clk,
-    input wire       signal_detectCHANGE, 
-    input wire       signal_detect, 
     input wire       VALID_PUDI, // Se conecta a PUDR
     input wire [9:0] PUDI,  // Se conecta al code_group
 
@@ -62,12 +60,11 @@ module synchronization #(
   reg [2:0] bad_cg_cont; 
   reg [1:0] good_cg_cont; 
   reg       cg; // cg = 1 -> good_cg | cg = 0 -> bad_cg
-  reg       loss_sync; 
   reg       VALID_SIGNAL;
   /*
   * Assigns auxiliares para variables intermedias
   */
-
+    assing cg = `PUDI_INVALID; 
 
   /*
   * Lógica secuencial
@@ -80,18 +77,16 @@ module synchronization #(
       comma_cont    <= 2'b00; 
       sync_cont     <= 2'b00;
       good_cg_cont  <= 2'b00; 
-      loss_sync     <= 0;
       rx_even       <= 0;
       VALID_SIGNAL  <= 0; 
 
     end else begin
       // Actualizar al próximo state
       state <= next_state;
-      cg <= VALID_PUDI;
+
   
 
-      VALID_SIGNAL <= (VALID_PUDI || signal_detect);
-      loss_sync <= (signal_detectCHANGE && VALID_PUDI);
+      VALID_SIGNAL <= (VALID_PUDI);
       //Asignacion de parametros en el estado de LOSS_OF_SYNC
       if (state == LOSS_OF_SYNC) begin 
         code_sync_status <= 0;
@@ -208,7 +203,7 @@ module synchronization #(
       * Descripcion:
       */
       IDLE: begin
-        if(!mr_main_reset && loss_sync) begin 
+        if(!mr_main_reset) begin 
           next_state = LOSS_OF_SYNC;
         end else begin 
           next_state = IDLE; 
