@@ -88,10 +88,10 @@ module receive (
   localparam WAIT_FOR_K = 8'b00000010;
   localparam RX_K = 8'b00000100;
   localparam IDLE_D = 8'b00001000;
-  localparam START = 8'b00010000;
-  localparam RECEIVE = 8'b00100000;
+  localparam START = 8'b0001_0000;
+  localparam RECEIVE = 8'b0010_0000;
   localparam TRR_EXTEND = 8'b01000000;
-  localparam TRI_RRI = 8'b10000000;
+  localparam TRI_RRI = 8'b1000_0000;
 
   // Estado actual y próximo estado
   reg [7:0] state, next_state;
@@ -201,7 +201,10 @@ module receive (
 
             // Si se recibe la señal de START irse al estado de START
           end else if (rx_code_group == `K27_7_10B_RD_P || rx_code_group == `K27_7_10B_RD_N) begin
-            next_state = START;
+
+            rx_dv      = 1'b1;  // Se enciende la salida de dato válido
+            rxd        = 8'b0101_0101;  // Se manda la siguiente secuencia de datos
+            next_state = RECEIVE;  // Se envía al estado de recibido
           end
         end  // IDLE_D
 
