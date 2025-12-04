@@ -68,6 +68,8 @@ PUDI_checker u1 (
   reg [2:0] bad_cg_cont; 
   reg [1:0] good_cg_cont; 
   reg       VALID_SIGNAL;
+  wire       cg; 
+
   /*
   * Assigns auxiliares para variables intermedias
   */

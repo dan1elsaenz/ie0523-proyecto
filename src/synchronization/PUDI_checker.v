@@ -27,7 +27,9 @@ module PUDI_checker #(
     
     always @(*) begin
         // Valores por defecto 
-
+        PUDI_INVALID = 1'b0;
+        D_PUDI = 1'b0;
+        comma_PUDI = 1'b0;
 
         case (PUDI)
             
