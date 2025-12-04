@@ -13,173 +13,280 @@
 * ==================================================================================
 */
 
+
+/*
+ * Archivos incluidos
+ */
 `include "../constants/code_group_constants.v"
 `include "decode.v"
 `include "../running_disparity/running_disparity.v"
 
-module receive (
-    input rx_clk,
-    input mr_main_reset,
-    input [10:0] sudi,
-    input sync_status,
 
-    output reg [7:0] rxd,
-    output reg rx_dv,
-    output reg rx_er
+module receive (
+    // INPUT
+    input             rx_clk,         // Reloj de recepción
+    input             mr_main_reset,  // Reinicio activo en alto
+    input      [10:0] sudi,           // Serial Unit Data Input (10 bits + paridad)
+    input             sync_status,    // Estado de sincronización
+    // OUTPUT
+    output reg [ 7:0] rxd,            // Dato recibido de 8 bits
+    output reg        rx_dv,          // Indicador de dato válido
+    output reg        rx_er           // Indicador de error
 );
 
-    wire [9:0] rx_code_group;           // Almacena los 10 bits del code-group
-    wire rx_even;                       // Bit de paridad
-    reg [29:0] check_end;               // Almacena los últimos 3 code-groups
-    wire [7:0] decoded_octet;           // Salida del decodificador
 
-    assign rx_code_group = sudi[10:1];  // Asignar los 10 bits de entrada
-    assign rx_even = sudi[0];           // Asignar el bit de paridad
-    reg rx_running_disparity;
-    wire next_rx_running_disparity;
+  /*
+  * Variables internas
+  */
+  // Extracción de señales desde sudi
+  wire [ 9:0] rx_code_group;  // Almacena los 10 bits del code-group
+  wire        rx_even;  // Bit de paridad (ciclo par/impar)
 
-    // Instancia del módulo de running_disparity
-    running_disparity #(
-        .CG_WIDTH(10)
-    ) rd (
-        .rd_in     (rx_running_disparity),
-        .code_group(rx_code_group),
-        .rd_out    (next_rx_running_disparity)
-    );
+  // Registro de verificación de fin de paquete
+  reg  [29:0] check_end;  // Almacena los últimos 3 code-groups
 
-    // Instancia del módulo decode
-    decode #(
-        .CG_WIDTH(10),
-        .OCTET_WIDTH(8)
-    ) decode_inst (
-        .rx_code_group(rx_code_group),
-        .rx_running_disparity(rx_running_disparity),
-        .rx_octet(decoded_octet)
-    );
+  // Salida del decodificador
+  wire [ 7:0] decoded_octet;  // Octeto decodificado
 
-    // Estados de la máquina
-    localparam LINK_FAILED   = 8'b00000001;
-    localparam WAIT_FOR_K    = 8'b00000010;
-    localparam RX_K          = 8'b00000100;
-    localparam IDLE_D        = 8'b00001000;
-    localparam START         = 8'b00010000;
-    localparam RECEIVE       = 8'b00100000;
-    //localparam RD_DATA       = 9'b001000000;
-    localparam TRR_EXTEND    = 8'b01000000;
-    localparam TRI_RRI       = 8'b10000000;
+  // Running disparity actual y siguiente
+  reg         rx_running_disparity;
+  wire        next_rx_running_disparity;
 
-    reg [7:0] state, next_state;
+  // Asignación de señales de entrada
+  assign rx_code_group = sudi[10:1];  // Asignar los 10 bits de entrada
+  assign rx_even       = sudi[0];  // Asignar el bit de paridad
 
-    // Lógica secuencial
-    always @(posedge rx_clk) begin
-        if (mr_main_reset) begin
-            state <= LINK_FAILED;
-            rxd <= 0;
-            rx_dv <= 0;
-            rx_er <= 0;
-            check_end <= 30'b0;
-            rx_running_disparity <= 0; // running disparity negativo inicialmente
-        end else begin
-            state <= next_state;
-            rx_running_disparity <= next_rx_running_disparity; // actualizar el running disparity
-            // Actualizar el registro de verificación de fin de paquete (desplazamiento)
-            check_end <= {check_end[19:0], rx_code_group};
-        end
+
+  /*
+  * Instanciación de submódulos
+  */
+  // running_disparity calcula el siguiente running_disparity
+  running_disparity #(
+      .CG_WIDTH(10)
+  ) rd (
+      .rd_in     (rx_running_disparity),
+      .code_group(rx_code_group),
+      .rd_out    (next_rx_running_disparity)
+  );
+
+  // decode se encarga de realizar la decodificación 10B/8B
+  decode #(
+      .CG_WIDTH   (10),
+      .OCTET_WIDTH(8)
+  ) decode_inst (
+      .rx_code_group       (rx_code_group),
+      .rx_running_disparity(rx_running_disparity),
+      .rx_octet            (decoded_octet)
+  );
+
+
+  /*
+  * Asignación de estados
+  * Hot-One Encoding para evitar carreras de estado
+  */
+  localparam LINK_FAILED = 8'b00000001;
+  localparam WAIT_FOR_K = 8'b00000010;
+  localparam RX_K = 8'b00000100;
+  localparam IDLE_D = 8'b00001000;
+  localparam START = 8'b00010000;
+  localparam RECEIVE = 8'b00100000;
+  localparam TRR_EXTEND = 8'b01000000;
+  localparam TRI_RRI = 8'b10000000;
+
+  // Estado actual y próximo estado
+  reg [7:0] state, next_state;
+
+
+  /*
+  * Lógica secuencial
+  */
+  always @(posedge rx_clk) begin
+    if (mr_main_reset) begin
+      // Estado inicial
+      state                <= LINK_FAILED;
+      rxd                  <= 0;
+      rx_dv                <= 0;
+      rx_er                <= 0;
+      check_end            <= 30'b0;
+      rx_running_disparity <= 0;  // Running disparity negativo inicialmente
+
+    end else begin
+      // Actualizar al próximo estado
+      state                <= next_state;
+      rx_running_disparity <= next_rx_running_disparity;
+
+      // Actualizar el registro de verificación de fin de paquete (desplazamiento)
+      check_end            <= {check_end[19:0], rx_code_group};
     end
 
-    // Lógica combinacional
-    always @(*) begin
-        next_state = state;
-        rx_dv = 1'b0;
-        rx_er = 1'b0;
-        rxd = 8'b0;
-        if (sync_status) begin // si se encuentra sincronizado funciona la máquina de estados, caso contrario se queda esperando a que se sincronice
-        case(state)
-            LINK_FAILED: begin
-                if (sync_status) begin // si se activa la señal de sincronizado seguir
-                    next_state = WAIT_FOR_K;
-                end
-            end
+  end  // always @(posedge rx_clk)
 
-            WAIT_FOR_K: begin
-                if (rx_even && (rx_code_group == `K28_5_10B_RD_P || rx_code_group == `K28_5_10B_RD_N)) begin // si rx_even está activado y lo que se recibe es un IDLE pasa de estado
-                    next_state = RX_K;
-                end
-            end
 
-            RX_K: begin
-                rx_dv = 0;
-                rx_er = 0;
-                if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N && 
-                    rx_code_group != `D2_2_10B_RD_P && rx_code_group != `D2_2_10B_RD_N) begin // verificar que el valor de /D/ sea válido
-                    next_state = IDLE_D;
-                end
-            end
+  /*
+  * Lógica combinacional
+  */
+  always @(*) begin
 
-            IDLE_D: begin
-                rx_dv = 0;
-                rx_er = 0;
-                if (rx_code_group == `K28_5_10B_RD_P || rx_code_group == `K28_5_10B_RD_N) begin // Verificar si es una coma, si es una coma se devuelve al estado RX_K
-                    next_state = RX_K;
-                end else if (rx_code_group == `K27_7_10B_RD_P || rx_code_group == `K27_7_10B_RD_N) begin // si se recibe la señal de START irse al estado de START
-                    next_state = START;
-                end
-            end
+    // Realimentación de los estados: Valor por defecto
+    next_state = state;
 
-            START: begin
-                rx_dv = 1'b1; // se enciende la salida de dato válido
-                rxd = 8'b0101_0101; // Se manda la siguiente secuencia de datos
-                next_state = RECEIVE; // Se envía al estado de recibido
-            end
+    // Valores predeterminados
+    rx_dv      = 1'b0;
+    rx_er      = 1'b0;
+    rxd        = 8'b0;
 
-            RECEIVE: begin 
-                // Verificar si check_end contiene /T/R/I (últimos 3 code-groups)
+    // Verificar estado de sincronización
+    if (sync_status) begin
+      // Si se encuentra sincronizado funciona la máquina de estados
 
-                if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
-                    (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
-                    (check_end[9:0] == `K28_5_10B_RD_P || check_end[9:0] == `K28_5_10B_RD_N)) begin
-                    next_state = TRI_RRI;
-                end 
-                // Si no es /T/R/I, verificar /T/R/R
-                else if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
-                    (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
-                    (check_end[9:0] == `K23_7_10B_RD_P || check_end[9:0] == `K23_7_10B_RD_N)) begin
-                    rx_dv = 1'b1;
-                    rxd = decoded_octet;
-                    next_state = TRR_EXTEND;
-                end
-                // Si no es ninguno de los anteriores
-                else if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N && 
-                        rx_code_group != `D2_2_10B_RD_P && rx_code_group != `D2_2_10B_RD_N) begin
-                    rx_dv = 1'b1;
-                    rxd = decoded_octet;
-                end
-            end
+      case (state)
 
-            //RD_DATA: begin
-                //rx_dv = 1'b1;
-                //rxd = decoded_octet;  // Decodificar el code-group
-                //next_state = RECEIVE;
-            //end
+        /*
+        * LINK_FAILED
+        *
+        * Estado de enlace fallido. Espera a que sync_status se active
+        * para pasar al siguiente estado
+        */
+        LINK_FAILED: begin
+          if (sync_status) begin
+            // Si se activa la señal de sincronizado seguir
+            next_state = WAIT_FOR_K;
+          end
+        end  // LINK_FAILED
 
-            TRR_EXTEND: begin
-                rx_er = 1'b1; // se activa la señal de error
-                rxd = 8'b0000_1111; // se envía la siguiente señal de 8 bits por la salida
-                next_state = TRI_RRI; 
-            end
+        /*
+        * WAIT_FOR_K
+        *
+        * Espera a recibir un code-group K28.5 (IDLE) con ciclo par
+        * para sincronizar el inicio de la recepción
+        */
+        WAIT_FOR_K: begin
+          // Si rx_even está activado y lo que se recibe es un IDLE pasa de estado
+          if (rx_even && (rx_code_group == `K28_5_10B_RD_P || rx_code_group == `K28_5_10B_RD_N)) begin
+            next_state = RX_K;
+          end
+        end  // WAIT_FOR_K
 
-            TRI_RRI: begin
-                next_state = RX_K;
-            end
+        /*
+        * RX_K
+        *
+        * Recibe el segundo code-group del IDLE (D21.5 o D2.2)
+        * Verifica que sea uno de estos valores válidos
+        */
+        RX_K: begin
+          rx_dv = 0;
+          rx_er = 0;
 
-            default: begin
-                next_state = LINK_FAILED; // caso contrario de lo demás se envía a link_failed
-            end
-        endcase
-        end else begin
-            state = LINK_FAILED; // si sync_status = 0, no está sincronizado
-        end
+          // Verificar que el valor de /D/ sea válido
+          if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N &&
+              rx_code_group != `D2_2_10B_RD_P && rx_code_group != `D2_2_10B_RD_N) begin
+            next_state = IDLE_D;
+          end
+        end  // RX_K
+
+        /*
+        * IDLE_D
+        *
+        * Estado de espera. Puede recibir:
+        * - K28.5: Nueva secuencia IDLE, vuelve a RX_K
+        * - K27.7: Start of Packet, pasa a START
+        */
+        IDLE_D: begin
+          rx_dv = 0;
+          rx_er = 0;
+
+          // Verificar si es una coma, si es una coma se devuelve al estado RX_K
+          if (rx_code_group == `K28_5_10B_RD_P || rx_code_group == `K28_5_10B_RD_N) begin
+            next_state = RX_K;
+
+            // Si se recibe la señal de START irse al estado de START
+          end else if (rx_code_group == `K27_7_10B_RD_P || rx_code_group == `K27_7_10B_RD_N) begin
+            next_state = START;
+          end
+        end  // IDLE_D
+
+        /*
+        * START
+        *
+        * Inicio de paquete detectado. Activa rx_dv y envía
+        * la secuencia de inicio 0x55 (01010101)
+        */
+        START: begin
+          rx_dv      = 1'b1;  // Se enciende la salida de dato válido
+          rxd        = 8'b0101_0101;  // Se manda la siguiente secuencia de datos
+          next_state = RECEIVE;  // Se envía al estado de recibido
+        end  // START
+
+        /*
+        * RECEIVE
+        *
+        * Recibe datos del paquete. Verifica constantemente si se recibe
+        * una secuencia de fin de paquete:
+        * - /T/R/I (K29.7, K23.7, K28.5): Fin normal
+        * - /T/R/R (K29.7, K23.7, K23.7): Extensión de carrier
+        * Si no es fin de paquete, decodifica y envía el octeto
+        */
+        RECEIVE: begin
+          // Verificar si check_end contiene /T/R/I (últimos 3 code-groups)
+          if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
+              (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
+              (check_end[9:0] == `K28_5_10B_RD_P || check_end[9:0] == `K28_5_10B_RD_N)) begin
+            next_state = TRI_RRI;
+
+            // Si no es /T/R/I, verificar /T/R/R
+          end else if ((check_end[29:20] == `K29_7_10B_RD_P || check_end[29:20] == `K29_7_10B_RD_N) &&
+                       (check_end[19:10] == `K23_7_10B_RD_P || check_end[19:10] == `K23_7_10B_RD_N) &&
+                       (check_end[9:0] == `K23_7_10B_RD_P || check_end[9:0] == `K23_7_10B_RD_N)) begin
+            rx_dv      = 1'b1;
+            rxd        = decoded_octet;
+            next_state = TRR_EXTEND;
+
+            // Si no es ninguno de los anteriores, continuar recibiendo datos
+          end else if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N &&
+                       rx_code_group != `D2_2_10B_RD_P && rx_code_group != `D2_2_10B_RD_N) begin
+            rx_dv = 1'b1;
+            rxd   = decoded_octet;
+          end
+        end  // RECEIVE
+
+        /*
+        * TRR_EXTEND
+        *
+        * Extensión de carrier detectada (/T/R/R).
+        * Activa señal de error y envía código 0x0F
+        */
+        TRR_EXTEND: begin
+          rx_er      = 1'b1;  // Se activa la señal de error
+          rxd        = 8'b0000_1111;  // Se envía la siguiente señal de 8 bits por la salida
+          next_state = TRI_RRI;
+        end  // TRR_EXTEND
+
+        /*
+        * TRI_RRI
+        *
+        * Fin de paquete. Regresa al estado RX_K para esperar
+        * la siguiente secuencia IDLE
+        */
+        TRI_RRI: begin
+          next_state = RX_K;
+        end  // TRI_RRI
+
+        /*
+        * default
+        *
+        * Caso contrario de lo demás se envía a LINK_FAILED
+        */
+        default: begin
+          next_state = LINK_FAILED;
+        end  // default
+
+      endcase
+
+    end else begin
+      // Si sync_status = 0, no está sincronizado
+      state = LINK_FAILED;
     end
 
+  end  // always @(*)
 
 endmodule
