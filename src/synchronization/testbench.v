@@ -1,6 +1,6 @@
 `include "tester.v"
 `include "synchronization.v"
-
+`include "PUDI_checker.v"
 
 module Controlador_tb; 
 
@@ -30,7 +30,10 @@ synchronization U0 (
     .SUDI(SUDI)
 );
 
+PUDI_checker PC0 (
+    .PUDI(PUDI)
 
+);
 probador P0 (
     .mr_main_reset(mr_main_reset),
     .clk(clk),
