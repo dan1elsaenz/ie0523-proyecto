@@ -10,7 +10,8 @@
 *
 * =============================================================================
 */
-
+`ifndef PUDI_CHECKER_V
+`define PUDI_CHECKER_V
 `include "../constants/code_group_constants.v"
 
 module PUDI_checker #(
@@ -276,3 +277,5 @@ module PUDI_checker #(
         endcase
     end
  endmodule
+
+ `endif
