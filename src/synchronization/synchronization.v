@@ -70,7 +70,7 @@ PUDI_checker u1 (
   /*
   * Assigns auxiliares para variables intermedias
   */
-  assign cg = PUDI_INVALID; 
+  assign cg = ~PUDI_INVALID; 
 
   /*
   * Lógica secuencial
