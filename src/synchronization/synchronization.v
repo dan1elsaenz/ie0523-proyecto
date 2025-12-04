@@ -72,14 +72,14 @@ module synchronization #(
   /*
   * Lógica secuencial
   */
-  always @(posedge clk or posedge mr_main_reset) begin
-    if (!mr_main_reset) begin
+  always @(posedge clk) begin
+    if (mr_main_reset) begin
       // state inicial
       state <= IDLE;
-      bad_cg_cont   <= 0; 
-      comma_cont    <= 0; 
-      sync_cont     <= 0;
-      good_cg_cont  <= 0; 
+      bad_cg_cont   <= 2'b00; 
+      comma_cont    <= 2'b00; 
+      sync_cont     <= 2'b00;
+      good_cg_cont  <= 2'b00; 
       loss_sync     <= 0;
       rx_even       <= 0;
       VALID_SIGNAL  <= 0; 
@@ -126,23 +126,57 @@ module synchronization #(
         code_sync_status <=  1; 
         rx_even <= !rx_even;
         SUDI <= {PUDI, rx_even}; 
+        if (cg == 0) begin 
+            good_cg_cont <= 2'b00;
+            bad_cg_cont <= bad_cg_cont + 1; 
+        end  else if (cg == 1) begin 
+            good_cg_cont <= good_cg_cont + 1;
+            if (bad_cg_cont == 2'b00) begin 
+                bad_cg_cont <= 2'b00;
+            end else begin 
+                bad_cg_cont <= bad_cg_cont - 1; 
+            end 
+        end 
       end 
 
       //Asignacion de parametros en el estado de SYNC_ACQUIRED_2
       if (state == SYNC_ACQUIRED_2) begin 
-        bad_cg_cont <= bad_cg_cont + 1; 
         rx_even <= !rx_even; 
-        SUDI <= {PUDI, rx_even}; 
-        good_cg_cont <= 0; 
+        SUDI <= {PUDI, rx_even};
+        if (good_cg_cont == 0) begin 
+            good_cg_cont <= 0;
+
+        end else if (cg == 0) begin 
+            good_cg_cont <= good_cg_cont -1;
+                bad_cg_cont <= bad_cg_cont + 1;
+             end 
+             else if (cg == 1) begin 
+                good_cg_cont <= good_cg_cont + 1;
+                if (bad_cg_cont == 2'b00) begin 
+                    bad_cg_cont <= 2'b00 ;
+                end else if (bad_cg_cont != 2'b00)begin 
+                    bad_cg_cont <= bad_cg_cont - 1;
+                end 
+            end 
       end
 
 
       //Asignacion de parametros en el estado de SYNC_ACQUIRED_3
       if (state == SYNC_ACQUIRED_3) begin 
-        bad_cg_cont <= bad_cg_cont - 1; 
-        good_cg_cont <= good_cg_cont + 1; 
         rx_even <= !rx_even; 
         SUDI <= {PUDI, rx_even}; 
+        if (cg == 0) begin 
+            bad_cg_cont <= bad_cg_cont + 1;
+            good_cg_cont <= 2'b00 ;
+        end else if (cg == 1) begin 
+            good_cg_cont <= good_cg_cont + 1;
+            if (bad_cg_cont == 2'b00) begin 
+                bad_cg_cont <= 2'b00;
+            end else if (bad_cg_cont != 2'b00) begin 
+                bad_cg_cont <= bad_cg_cont - 1;
+            end 
+
+        end 
       end      
 
       // Reseteo de contadores de cg_bad y cg_good
@@ -174,7 +208,7 @@ module synchronization #(
       * Descripcion:
       */
       IDLE: begin
-        if(mr_main_reset && loss_sync) begin 
+        if(!mr_main_reset && loss_sync) begin 
           next_state = LOSS_OF_SYNC;
         end else begin 
           next_state = IDLE; 
