@@ -6,7 +6,7 @@
 * - Curso       : Sistemas Digitales II, Universidad de Costa Rica
 * - Fecha       : 05-12-2025
 *
-* - Descripción : 
+* - Descripción :
 *   Módulo de recepción que decodifica code-groups 8B/10B y controla el flujo
 *   de datos mediante una máquina de estados.
 *
@@ -26,7 +26,7 @@ module receive (
     // INPUT
     input             rx_clk,         // Reloj de recepción
     input             mr_main_reset,  // Reinicio activo en alto
-    input      [10:0] sudi,           // Serial Unit Data Input (10 bits + paridad)
+    input      [10:0] sudi,           // Señal en donde se recibe el code-group y el bit de paridad
     input             sync_status,    // Estado de sincronización
     // OUTPUT
     output reg [ 7:0] rxd,            // Dato recibido de 8 bits
