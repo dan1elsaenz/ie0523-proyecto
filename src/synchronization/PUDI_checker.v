@@ -19,7 +19,7 @@ module PUDI_checker #(
 )(
 
     // Recibe como parámetro el PUDI
-    input wire [9:0] PUDI,
+    input [9:0] PUDI,
 
     // Decide si es válido o inválido 
     output reg PUDI_INVALID, comma_PUDI, D_PUDI
@@ -27,9 +27,7 @@ module PUDI_checker #(
     
     always @(*) begin
         // Valores por defecto 
-        PUDI_INVALID = 1'b0;
-        comma_PUDI   = 1'b0; 
-        D_PUDI       = 1'b0; 
+
 
         case (PUDI)
             
