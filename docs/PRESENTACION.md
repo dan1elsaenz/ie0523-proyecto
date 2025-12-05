@@ -36,25 +36,26 @@ Para garantizar coherencia, calidad y un buen trabajo en paralelo, se utilizó.
 
 1.  **Formato de código estandarizado**
 
-        - Plantilla llamada `template.v` para tener una misma estructura.
-        - Uso de la herramienta Verible para formateo automático y consistencia en todo el código.
-        - Señales llamadas igual al estándar y en minúscula.
-        - Nombres de estados en mayúscula.
+> - Plantilla llamada `template.v` para tener una misma estructura.
+> - Uso de la herramienta Verible para formateo automático y consistencia en todo el código.
+> - Señales llamadas igual al estándar y en minúscula.
+> - Nombres de estados en mayúscula.
 
-    <br>
+<br>
 
 2.  **Flujo de trabajo con GitHub**
 
-        - Desarrollo por branches para funcionalidades aisladas.
-        - Manejo de tareas mediante Issues.
-        - Revisiones de código mediante Pull Requests.
+> - Desarrollo por branches para funcionalidades aisladas.
+> - Manejo de tareas mediante Issues.
+> - Revisiones de código mediante Pull Requests.
 
-    <br>
+<br>
 
 3.  **Repartición de módulos**
-    - Daniel Sáenz: Módulo Transmisor.
-    - Rodrigo Sánchez: Módulo Sincronizador.
-    - Brandon Jiménez: Modulo Receptor.
+
+> - Daniel Sáenz: Módulo Transmisor.
+> - Rodrigo Sánchez: Módulo Sincronizador.
+> - Brandon Jiménez: Modulo Receptor.
 
 <br>
 <br>
@@ -140,11 +141,13 @@ La estructura de los archivos del proyecto se muestra a continuación:
 #### Pruebas:
 
 - **Prueba 0**: Envío de IDLEs
+
   Tras el `reset`, se espera un período de inactividad donde `tx_en = 0` y el transmisor permanece en estado de `IDLE`.
 
   <br>
 
 - **Prueba 1**: Terminación con /T/R/R/ (_carrier extend_)
+
   Se habilita la transmisión (`tx_en = 1`), se envía una secuencia de datos y se desactiva la transmisión, lo que fuerza un `/T/` y se debe de producir un `carrier extend`. Se envía la siguiente secuencia de datos:
 
 <p align="center">
@@ -154,6 +157,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
   <br>
 
 - **Prueba 2**: Terminación sin _carrier extend_ y _running disparity_ positivo
+
   Se habilita la transmisión, se envía una secuencia de datos y se desativa la transmisión, esta combinación de datos está seleccionada para que el _running disparity_ al final de la trama sea **positivo**, pero sin requerir `carrier extend`. Se envía la siguiente secuencia:
 
 <p align="center">
@@ -161,6 +165,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 </p>
 
 - **Prueba 3**: Terminación con _running disparity_ negativo
+
   Se habilita la transmisión, se envía una secuencia de datos y se desactiva la transmisión, en este caso, la combinación de datos se seleccionó para que el _running disparity_ al final de la trama sea **negativo**. Se envía la siguiente secuencia:
 
 <p align="center">
