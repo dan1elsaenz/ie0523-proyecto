@@ -92,7 +92,7 @@ module receive (
   localparam TRI_RRI = 6'b100000;
 
   // Estado actual y próximo estado
-  reg [7:0] state, next_state;
+  reg [5:0] state, next_state;
 
 
   /*
