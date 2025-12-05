@@ -135,6 +135,38 @@ La estructura de los archivos del proyecto se muestra a continuación:
 </p>
 
 <br>
+
+#### Pruebas:
+- **Prueba 0**: 
+  Tras el `reset`, se espera un período de inactividad donde `tx_en = 0` y el transmisor permanece en estado de `IDLE`.
+
+  <br>
+
+- **Prueba 1**:
+  Se habilita la transmisión (`tx_en = 1`), se envía una secuencia de datos y se desactiva la transmisión, lo que fuerza un `/T/` y se debe de producir un `carrier extend`. Se envía la siguiente secuencia de datos:
+
+<p align="center">
+  <code>D11_3, D23_1, D7_4, D12_5</code>
+</p>
+
+
+
+  <br>
+
+- **Prueba 2**:
+  Se habilita la transmisión, se envía una secuencia de datos y se desativa la transmisión, esta combinación de datos está seleccionada para que el *running disparity* al final de la trama sea **positivo**, pero sin requerir `carrier extend`. Se envía la siguiente secuencia:
+
+<p align="center">
+  <code>D11_3, D23_1, D7_4, D12_5, D8_6</code>
+</p>
+
+- **Prueba 3**:
+  Se habilita la transmisión, se envía una secuencia de datos y se desactiva la transmisión, en este caso, la combinación de datos se seleccionó para que el *running disparity* al final de la trama sea **negativo**. Se envía la siguiente secuencia:
+
+<p align="center">
+  <code>D11_3, D23_1, D1_0, D31_1</code>
+</p>
+
 <br>
 
 <p align="center">
@@ -154,6 +186,16 @@ La estructura de los archivos del proyecto se muestra a continuación:
 </p>
 
 <br>
+
+#### Pruebas:
+- **Prueba 1**: 
+  Corroborar la correcta sincronización al recibir una secuencia de comas deseada, entrando así en el estado de sincronización.
+
+  <br>
+
+- **Prueba 2**:
+  Corroborar el ingreso correcto a los estados de caracteres inválidos ante la entrada de códigos inválidos.
+
 <br>
 
 <p align="center">
@@ -185,6 +227,22 @@ La estructura de los archivos del proyecto se muestra a continuación:
 </p>
 
 <br>
+
+#### Pruebas:
+- **Prueba 1**: 
+  El receptor entra en estado sincronizado y recibe el ordered set `/S/` y procede con la decodificación de los datos, enviándolos posteriormente a la interfaz GMII.
+
+  <br>
+
+- **Prueba 2**:
+  El receptor no está sincronizado, por lo que el receptor no debe entregar datos a la interfaz GMII.
+
+  <br>
+
+- **Prueba 3**:
+  En esta prueba se fuerza un escenario incorrecto donde la terminación recibida es `/T/R/R/`.
+
+
 <br>
 
 <p align="center">
