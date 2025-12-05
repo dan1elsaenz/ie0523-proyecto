@@ -232,8 +232,7 @@ module receive (
             next_state = TRI_RRI;
 
             // Si no es ninguno de los anteriores, continuar recibiendo datos
-          end else if (rx_code_group != `D21_5_10B_RD_P && rx_code_group != `D21_5_10B_RD_N &&
-                       rx_code_group != `D2_2_10B_RD_P && rx_code_group != `D2_2_10B_RD_N) begin
+          end else if (rx_code_group != `K28_5_10B_RD_P && rx_code_group != `K28_5_10B_RD_N) begin
             rx_dv = 1'b1;
             rxd   = decoded_octet;
           end
