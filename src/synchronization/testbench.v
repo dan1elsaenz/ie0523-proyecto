@@ -2,50 +2,42 @@
 `include "synchronization.v"
 `include "PUDI_checker.v"
 
-module Controlador_tb; 
+module testbench;
+
+  initial begin
+    $dumpfile("resultados.vcd");
+    $dumpvars(-1, U0);
+  end
+
+  wire        mr_main_reset;
+  wire        clk;
+  wire        valid_pudi;  // Se conecta a PUDR
+  wire [ 9:0] pudi;  // Se conecta al code_group
+  wire        code_sync_status;
+  wire        rx_even;
+  wire [10:0] sudi;
 
 
-    wire        mr_main_reset;
-    wire        clk;
-    wire        VALID_PUDI; // Se conecta a PUDR
-    wire [9:0]  PUDI;  // Se conecta al code_group
-    wire        code_sync_status;
-    wire        rx_even;
-    wire [10:0] SUDI;
-    wire PUDI_INVALID, comma_PUDI, D_PUDI;
-
-    initial begin 
-        $dumpfile("resultados.vcd");
-        $dumpvars(-1, U0);
-
-    end 
+  synchronization U0 (
+      .clk         (clk),
+      .mr_main_reset(mr_main_reset),
+      .valid_pudi(valid_pudi),
+      .pudi(pudi),
+      .code_sync_status(code_sync_status),
+      .rx_even(rx_even),
+      .sudi(sudi)
+  );
 
 
-synchronization U0 (
-    .mr_main_reset(mr_main_reset),
-    .clk(clk),
-    .VALID_PUDI(VALID_PUDI),
-    .PUDI(PUDI),
-    .code_sync_status(code_sync_status),
-    .rx_even(rx_even),
-    .SUDI(SUDI)
-);
-
-PUDI_checker PC0 (
-        .PUDI(PUDI),            
-        .PUDI_INVALID(PUDI_INVALID),
-        .comma_PUDI(comma_PUDI),
-        .D_PUDI(D_PUDI)
-);
-probador P0 (
-    .mr_main_reset(mr_main_reset),
-    .clk(clk),
-    .VALID_PUDI(VALID_PUDI),
-    .PUDI(PUDI),
-    .code_sync_status(code_sync_status),
-    .rx_even(rx_even),
-    .SUDI(SUDI)
-);
+  probador P0 (
+      .clk             (clk),
+      .mr_main_reset   (mr_main_reset),
+      .valid_pudi      (valid_pudi),
+      .pudi            (pudi),
+      .code_sync_status(code_sync_status),
+      .rx_even         (rx_even),
+      .sudi            (sudi)
+  );
 
 
 endmodule

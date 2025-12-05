@@ -6,276 +6,268 @@
 * - Curso       : Sistemas Digitales II, Universidad de Costa Rica
 * - Fecha       : 4-12-2025
 *
-* - Descripción : 
+* - Descripción :
 *
 * =============================================================================
 */
+
+
 `ifndef PUDI_CHECKER_V
 `define PUDI_CHECKER_V
+
+/*
+* Incluir módulos
+*/
 `include "../constants/code_group_constants.v"
 
-module PUDI_checker #(
-    parameter integer param = -1 
-)(
 
-    // Recibe como parámetro el PUDI
-    input [9:0] PUDI,
+module pudi_checker #(
+    parameter integer CG_WIDTH = 10
+) (
+    // INPUT
+    input [CG_WIDTH-1:0] pudi,
+    // OUTPUT
+    output reg pudi_invalid,
+    output reg comma_pudi,
+    output reg data_pudi
+);
 
-    // Decide si es válido o inválido 
-    output reg PUDI_INVALID, comma_PUDI, D_PUDI
-    ); 
-    
-    always @(*) begin
-        // Valores por defecto 
-        PUDI_INVALID = 1'b0;
-        D_PUDI = 1'b0;
-        comma_PUDI = 1'b0;
+  always @(*) begin
+    // Valores por defecto
+    pudi_invalid = 1'b0;
+    data_pudi = 1'b0;
+    comma_pudi = 1'b0;
 
-        case (PUDI)
-            
-            // COMMAs
-            `K28_5_10B_RD_P : begin
-                PUDI_INVALID = 1'b0;
-                comma_PUDI   = 1'b1;    
-            end
-            `K28_5_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0;
-                comma_PUDI   = 1'b1; 
-            end 
+    case (pudi)
 
-            // /R/ Carrier_Extend
-            `K23_7_10B_RD_P : PUDI_INVALID = 1'b0; 
-            `K23_7_10B_RD_N : PUDI_INVALID = 1'b0;
+      // COMMAs
+      `K28_5_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        comma_pudi   = 1'b1;
+      end
+      `K28_5_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        comma_pudi   = 1'b1;
+      end
 
-            // /S/ Start_of_Packet
-            `K27_7_10B_RD_P : PUDI_INVALID = 1'b0;
-            `K27_7_10B_RD_N : PUDI_INVALID = 1'b0;
+      // /R/ Carrier_Extend
+      `K23_7_10B_RD_P: pudi_invalid = 1'b0;
+      `K23_7_10B_RD_N: pudi_invalid = 1'b0;
 
-            // /T/ End_of_Packet
-            `K29_7_10B_RD_P :  PUDI_INVALID = 1'b0;
-            `K29_7_10B_RD_N : PUDI_INVALID = 1'b0;
+      // /S/ Start_of_Packet
+      `K27_7_10B_RD_P: pudi_invalid = 1'b0;
+      `K27_7_10B_RD_N: pudi_invalid = 1'b0;
 
-            // Para IDLE: D5.6
-            `D5_6_10B_RD_P :  begin
-                PUDI_INVALID = 1'b0;
-                D_PUDI       = 1'b1;
-            end
-            `D5_6_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            // Para IDLE: D16.2
-            `D16_2_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0;
-                D_PUDI       = 1'b1;
-            end
-            `D16_2_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      // /T/ End_of_Packet
+      `K29_7_10B_RD_P: pudi_invalid = 1'b0;
+      `K29_7_10B_RD_N: pudi_invalid = 1'b0;
 
-            `D0_0_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            `D0_0_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      // Para IDLE: D5.6
+      `D5_6_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D1_0_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            `D1_0_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1; 
-            end
+      `D5_6_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D2_0_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            `D2_0_10B_RD_N : begin 
-                    PUDI_INVALID = 1'b0; 
-                    D_PUDI       = 1'b1; 
-            end
+      // Para IDLE: D16.2
+      `D16_2_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D2_2_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0;
-                D_PUDI       = 1'b1; 
-            end
-            `D2_2_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D16_2_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D21_5_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            `D21_5_10B_RD_N: begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D0_0_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D11_3_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D0_0_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D11_3_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D1_0_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D23_1_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D1_0_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D23_1_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-            `D7_4_10B_RD_P : begin 
-            PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D2_0_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D7_4_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D2_0_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D12_5_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-  
-                
-            `D12_5_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D2_2_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D2_2_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D28_5_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D21_5_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D21_5_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D28_5_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D11_3_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D11_3_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D3_6_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D23_1_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D3_6_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D23_1_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D7_4_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D7_4_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D8_6_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D12_5_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D8_6_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D12_5_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D28_5_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D19_2_10B_RD_P : begin
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D28_5_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D3_6_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D3_6_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D8_6_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D19_2_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D8_6_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D24_3_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D19_2_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D19_2_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D24_3_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D24_3_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D24_3_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
- 
+      `D31_1_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D31_1_10B_RD_P : begin  
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D31_1_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D10_1_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D10_1_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D29_3_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D31_1_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D29_3_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
+      `D4_6_10B_RD_P: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
 
+      end
 
-            `D10_1_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      `D4_6_10B_RD_N: begin
+        pudi_invalid = 1'b0;
+        data_pudi    = 1'b1;
+      end
 
-            `D10_1_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
+      default: pudi_invalid = 1'b1;
+    endcase
+  end
+endmodule
 
-
-
-            `D29_3_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-
-            `D29_3_10B_RD_N : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-
-
-            `D4_6_10B_RD_P : begin 
-                PUDI_INVALID = 1'b0; 
-                D_PUDI      = 1'b1; 
-    
-            end 
-            
-            `D4_6_10B_RD_N : begin
-                PUDI_INVALID = 1'b0; 
-                D_PUDI       = 1'b1;
-            end
-
-
-
-            default : PUDI_INVALID = 1'b1; 
-        endcase
-    end
- endmodule
-
- `endif
+`endif

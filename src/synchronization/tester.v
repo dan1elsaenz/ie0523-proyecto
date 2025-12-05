@@ -1,178 +1,150 @@
+
+
 `include "../constants/code_group_constants.v"
 
-
-module probador (
-
-    output reg       mr_main_reset,
-    output reg       clk,
-    output reg       signal_detectCHANGE,
-    output reg       signal_detect,
-    output reg       VALID_PUDI,           // Se conecta a PUDR
-    output reg [9:0] PUDI,                 // Se conecta al code_group
-
-
-
-    input wire        code_sync_status,
-    input wire        rx_even,
-    input wire [10:0] SUDI
-
+module probador #(
+    parameter integer CG_WIDTH   = 10,
+    parameter integer CLK_PERIOD = 10
+) (
+    // INPUT
+    input  wire                code_sync_status,
+    input  wire                rx_even,
+    input  wire [  CG_WIDTH:0] sudi,
+    // OUTPUT
+    output reg                 mr_main_reset,
+    output reg                 clk,
+    output reg                 valid_pudi,        // Se conecta a PUDR
+    output reg  [CG_WIDTH-1:0] pudi               // Se conecta al code_group
 );
+
+  /*
+  * Generación de la señal de reloj
+  */
+  always begin
+    #(CLK_PERIOD / 2) clk = ~clk;
+  end
 
   initial begin
     // inicializaciones
-    PUDI = '0;
+    pudi = '0;
     clk  = 0;
     #5;
 
-    VALID_PUDI = 0;
+    valid_pudi = 0;
     mr_main_reset = 1;
-    #10 mr_main_reset = 0;
-    #10;
+    @(posedge clk) mr_main_reset = 0;
+    @(posedge clk);
 
     /*
     * COMMA
     */
-    VALID_PUDI = 1;
-    PUDI = `K28_5_10B_RD_N;
-    #10;
+    valid_pudi = 1;
+    pudi = `K28_5_10B_RD_N;
+    @(posedge clk);
 
-    VALID_PUDI = 1;
-    PUDI = `D16_2_10B_RD_P;
-    #10;
-
-    /*
-    * COMMA
-    */
-    VALID_PUDI = 1;
-    PUDI = `K28_5_10B_RD_N;
-    #10;
-
-    VALID_PUDI = 1;
-    PUDI = `D16_2_10B_RD_P;
-    #10;
+    valid_pudi = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
 
     /*
     * COMMA
     */
-    VALID_PUDI = 1;
-    PUDI = `K28_5_10B_RD_N;
-    #10;
+    valid_pudi = 1;
+    pudi = `K28_5_10B_RD_N;
+    @(posedge clk);
 
-    VALID_PUDI = 1;
-    PUDI = `D16_2_10B_RD_P;
-    #10;
+    valid_pudi = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
 
-    // Next_state = COMMA DETECT
-    PUDI = 10'b1010010110;  // D
-    #10
-    // comma_cont = 1
-    PUDI = 10'b110000_0101;
-    //next_state =  COMMA_DETECT
-    #10 PUDI = 10'b0101101001;  // D
+    /*
+    * COMMA
+    */
+    valid_pudi = 1;
+    pudi = `K28_5_10B_RD_N;
+    @(posedge clk);
 
-    #10
-    // comma_cont = 2
-    PUDI = 10'b1100000101;
-    //next_state =  COMMA_DETECT
-    #10 PUDI = 10'b1010010110;  // D
-    #10
-    // comma_cont = 3
-    PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1
+    valid_pudi = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
 
+    /*
+    * COMMA
+    */
+    valid_pudi = 1;
+    pudi = `K28_5_10B_RD_N;
+    @(posedge clk);
 
-
-    #20 mr_main_reset = 1;
-
-    #15 mr_main_reset = 0;
-    VALID_PUDI = 1;
-    // entrar al estado de Loss_of_sync
-    #20
-    // Next_state = COMMA DETECT
-    PUDI = 10'b0101101001;  // D
-    #10
-    // comma_cont = 1
-    PUDI = 10'b1100000101;
-    //next_state =  COMMA_DETECT
-    #10 PUDI = 10'b0101101001;  // D
-
-    #10
-    // comma_cont = 2
-    PUDI = 10'b1100000101;
-    //next_state =  COMMA_DETECT
-    #10 PUDI = 10'b0101101001;  // D
-    #10
-    // comma_cont = 3
-    PUDI = 10'b1100000101;
-    // NEXT_STATE = SYNC_ACQUIRE_1
-    #10 PUDI = 10'b0101101001;  // D
-    #20 PUDI = 10'b1111111111;
-    VALID_PUDI = 0;
-    #25 PUDI = 10'b0101101001;  // D
-    VALID_PUDI = 1;
-
-    // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE
+    valid_pudi = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
 
 
+    /*
+    * Ya está sincronizado
+    * Ahora se manda uno inválido y uno válido
+    */
+    valid_pudi = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    // Vuelve a sincronizarse
+    valid_pudi = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    valid_pudi = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    valid_pudi = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    valid_pudi = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
 
 
+    /*
+    * Desincronización completa
+    */
+    valid_pudi = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
 
-    // #80
-    // mr_main_reset = 0;
-    // signal_detectCHANGE = 0;
-    // signal_detect = 0;
-    // #15
-    // mr_main_reset = 1;
-    // signal_detectCHANGE = 1;
-    // VALID_PUDI = 1;
-    // signal_detect = 1;
-    //     // entrar al estado de Loss_of_sync
-    // #20
-    // // Next_state = COMMA DETECT
-    // PUDI  = 10'b0101101001; // D
-    // #10
-    // // comma_cont = 1
-    // PUDI = 10'b1100000101;
-    // //next_state =  COMMA_DETECT
-    // #10
-    // PUDI  = 10'b0101101001; // D
+    valid_pudi = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
 
-    // #10
-    // // comma_cont = 2
-    // PUDI = 10'b1100000101;
-    // //next_state =  COMMA_DETECT
-    // #10
-    // PUDI  = 10'b0101101001; // D
-    // #10
-    // // comma_cont = 3
-    // PUDI = 10'b1100000101;
-    // // NEXT_STATE = SYNC_ACQUIRE_1
-    // #10
-    // PUDI  = 10'b0101101001; // D
-    // #20
-    // PUDI = 10'b1111111111;
-    // VALID_PUDI = 0;
-    // // Espera iteraciones hasta llegar a bad_cg = 4 -> muere y va a IDLE
-    // #30
-    // VALID_PUDI = 1;
-    // #10
-    // // comma_cont = 1
-    // PUDI = 10'b1100000101;
-    // //next_state =  COMMA_DETECT
-    // #10
-    // PUDI  = 10'b0101101001; // D
+    valid_pudi = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
 
+    valid_pudi = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
 
+    valid_pudi = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
 
-    // #80
+    valid_pudi = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
 
-    #100 $finish;
+    valid_pudi = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    valid_pudi = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
+
+    #20 $finish;
 
   end
 
-  always begin
-    #5 clk = !clk;
-  end
 
 
 endmodule
