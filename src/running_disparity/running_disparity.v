@@ -38,6 +38,8 @@
 * =============================================================================
 */
 
+`ifndef RUNNING_DISPARITY_VH
+`define RUNNING_DISPARITY_VH
 
 module running_disparity #(
     parameter CG_WIDTH = 10
@@ -57,11 +59,11 @@ module running_disparity #(
   wire [3:0] four_bits;
 
   // Guardar el RD intermedio
-  reg rd_after_six;
+  reg        rd_after_six;
 
   // Contadores de unos
-  reg [2:0] ones_count_6b;
-  reg [2:0] ones_count_4b;
+  reg  [2:0] ones_count_6b;
+  reg  [2:0] ones_count_4b;
 
 
   /*
@@ -128,3 +130,5 @@ module running_disparity #(
   end  // always @(*)
 
 endmodule
+
+`endif

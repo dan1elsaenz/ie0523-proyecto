@@ -1,12 +1,17 @@
 # =============================================================================
 #
 # - File        : Makefile
-# - Autor       : Rodrigo Sánches Araya
+# - Autor       : Daniel Alberto Sáenz Obando (C37099)
 # - Curso       : Sistemas Digitales II, Universidad de Costa Rica
 # - Fecha       : 05-12-2025
 #
 # - Descripción :
 #   Este archivo automatiza los comandos de simulación implementado en Verilog.
+#   Incluye reglas para compilar con IcarusVerilog, ejecutar la simulación y
+#   generar el archivo de ondas VCD.
+#   Además, crea de forma automática un archivo de configuración de GTKWave
+#   para visualizar señales de la máquina de estados, entradas y salidas del
+#   sistema.
 #
 # =============================================================================
 
@@ -21,48 +26,50 @@ GTKW       := layout.gtkw
 # Configuración del layout de GTKWave
 define LAYOUT
 [timestart] 0
-[size] 1434 835
-[pos] 2 2
-*-5.827720 50 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
-[treeopen] Controlador_tb.
-[sst_width] 278
-[signals_width] 250
+[size] 1333 834
+[pos] 720 2
+*-6.000000 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[treeopen] testbench.
+[treeopen] testbench.pcs.
+[treeopen] testbench.pcs.transmit.
+[sst_width] 255
+[signals_width] 177
 [sst_expanded] 1
-[sst_vpaned_height] 238
+[sst_vpaned_height] 241
 @28
-Controlador_tb.U0.clk
-[color] 1
-Controlador_tb.U0.mr_main_reset
-@22
-[color] 2
-Controlador_tb.U0.state[6:0]
+testbench.clk
+testbench.mr_main_reset
 @200
 -
-@28
-Controlador_tb.U0.code_sync_status
+-TRANSMIT
 @22
-[color] 2
-Controlador_tb.U0.PUDI[9:0]
-[color] 2
-Controlador_tb.U0.SUDI[10:0]
+testbench.pcs.transmit.cg.octet[7:0]
+testbench.pcs.transmit.tx_code_group[9:0]
 @28
-[color] 5
-Controlador_tb.U0.comma_PUDI
-[color] 5
-Controlador_tb.U0.PUDI_INVALID
-[color] 5
-Controlador_tb.U0.cg
+testbench.pcs.transmit.tx_en
+@22
+testbench.pcs.txd[7:0]
 @200
 -
+-RECEIVE
+@22
+testbench.pcs.receive.state[7:0]
+testbench.pcs.receive.rx_code_group[9:0]
+testbench.pcs.receive.rxd[7:0]
 @28
-[color] 3
-Controlador_tb.U0.comma_cont[1:0]
-[color] 3
-Controlador_tb.U0.bad_cg_cont[2:0]
-[color] 3
-Controlador_tb.U0.good_cg_cont[1:0]
-[color] 3
-Controlador_tb.U0.sync_cont[1:0]
+testbench.pcs.receive.rx_dv
+testbench.pcs.receive.rx_er
+@200
+-
+-SYNC
+@22
+testbench.pcs.sync.state[6:0]
+@28
+testbench.pcs.sync.rx_even
+testbench.pcs.receive.sync_status
+testbench.pcs.sync.comma_PUDI
+@22
+testbench.pcs.sync.SUDI[10:0]
 [pattern_trace] 1
 [pattern_trace] 0
 endef

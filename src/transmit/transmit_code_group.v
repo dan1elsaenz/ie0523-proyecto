@@ -7,6 +7,11 @@
 * - Fecha       : 05-12-2025
 *
 * - Descripción :
+*   Máquina de estados transmit code group descrita en la cláusula 36 del
+*   estándar IEEE 802.3 de la capa PCS de Ethernet. Se encarga de generar los
+*   code-groups de 10 bits a partir de 8 bits, para los cuales diferencia si
+*   se trata de un ordered-set de control (/K/), de datos (/D/), de IDLE (/I/),
+*   de inicio (/S/), de terminación (/T/) o de carrier extend (/R/).
 *
 * =============================================================================
 */
@@ -17,7 +22,7 @@
  */
 `include "../constants/code_group_constants.v"
 `include "../constants/tx_o_set_constants.v"
-`include "encode.v"
+`include "../transmit/encode.v"
 `include "../running_disparity/running_disparity.v"
 
 
@@ -82,7 +87,7 @@ module transmit_code_group #(
   // running_disparity calcula el siguiente running_disparity
   running_disparity #(
       .CG_WIDTH(CG_WIDTH)
-  ) rd (
+  ) rd1 (
       .rd_in     (tx_disparity),
       .code_group(tx_code_group),
       .rd_out    (tx_disparity_next)
