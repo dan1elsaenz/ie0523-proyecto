@@ -2,7 +2,7 @@
 
 ## Conclusiones
 
-- La metodología empleado permitió avanzar rápido y mantener coherencia entre los tres bloques: Transmisor, Sincronizador y Receptor.
+- La metodología empleada permitió avanzar rápido y mantener coherencia entre los tres bloques: Transmisor, Sincronizador y Receptor.
 <br>
   
 - Al integrar los 3 módulos simplificados se verificó el correcto funcionamiento, cumpliendo así la cláusula 36 del estándar IEEE 802.3.
