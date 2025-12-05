@@ -53,7 +53,7 @@ testbench.pcs.txd[7:0]
 -
 -RECEIVE
 @22
-testbench.pcs.receive.state[7:0]
+testbench.pcs.receive.state[5:0]
 testbench.pcs.receive.rx_code_group[9:0]
 testbench.pcs.receive.rxd[7:0]
 @28
@@ -63,13 +63,13 @@ testbench.pcs.receive.rx_er
 -
 -SYNC
 @22
-testbench.pcs.sync.state[6:0]
+testbench.pcs.sync.state[9:0]
 @28
 testbench.pcs.sync.rx_even
 testbench.pcs.receive.sync_status
-testbench.pcs.sync.comma_PUDI
+testbench.pcs.sync.comma_pudi
 @22
-testbench.pcs.sync.SUDI[10:0]
+testbench.pcs.sync.sudi[10:0]
 [pattern_trace] 1
 [pattern_trace] 0
 endef

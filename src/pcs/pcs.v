@@ -72,11 +72,11 @@ module pcs #(
   synchronization #() sync (
       .mr_main_reset   (mr_main_reset),
       .clk             (clk),
-      .VALID_PUDI      (pudr),
-      .PUDI            (tx_code_group),
+      .valid_pudi      (pudr),
+      .pudi            (tx_code_group),
       .code_sync_status(code_sync_status),
       .rx_even         (rx_even),
-      .SUDI            (sudi)
+      .sudi            (sudi)
   );
 
 
