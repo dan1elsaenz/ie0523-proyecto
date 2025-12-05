@@ -123,7 +123,7 @@ Para garantizar coherencia, calidad y un buen trabajo en paralelo, se utilizó.
 ### Módulo RECEIVE
 
 <p align="center">
-    <img src="./images/receive_block.png" width="100%" alt="Diagrama bloques transmisor">
+    <img src="./images/receive_block.png" width="100%" alt="Diagrama bloques receptor">
     <br>
   <em>Figura 6. Diagrama de bloques del módulo RECEIVE.</em>
 </p>
