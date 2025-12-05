@@ -66,6 +66,62 @@ Para garantizar coherencia, calidad y un buen trabajo en paralelo, se utilizó.
 <br>
 <br>
 
+## Estructura del proyecto
+
+---
+
+La estructura de los archivos del proyecto se muestra a continuación:
+
+```bash
+.
+├── docs/
+├── LICENSE
+├── README.md
+└── src
+    ├── constants
+    │   ├── code_group_constants.v      # Code-groups definidos
+    │   └── tx_o_set_constants.v        # Definiciones de tx_o_set
+    ├── pcs
+    │   ├── Makefile                    # Ejecutador pruebas del pcs
+    │   ├── pcs.v                       # Wrapper para conexión loopback
+    │   ├── testbench.v                 # Banco de pruebas pcs
+    │   └── tester.v                    # Probador pcs
+    ├── receive
+    │   ├── decode.v                    # Decodificador 10b/8b
+    │   ├── Makefile                    # Ejecutar pruebas receptor
+    │   ├── receive.v                   # FSM del receptor
+    │   ├── testbench_receive.v         # Banco de pruebas receptor
+    │   └── tester_receive.v            # Probador receptor
+    ├── running_disparity
+    │   └── running_disparity.v         # Cálculo del siguiente rd
+    ├── synchronization
+    │   ├── Makefile                    # Ejecutar pruebas sync
+    │   ├── pudi_checker.v              # Verificar si el PUDI existe o no
+    │   ├── synchronization.v           # FSM del sync
+    │   ├── testbench.v                 # Banco de pruebas sync
+    │   └── tester.v                    # Probador sync
+    ├── template.v                      # Plantilla para los archivos .v
+    └── transmit
+        ├── encode.v                    # Codificar 8b/10b
+        ├── Makefile                    # Ejecutar pruebas transmit
+        ├── testbench.v                 # Banco de pruebas transmit
+        ├── tester.v                    # Probador transmit
+        ├── transmit_code_group.v       # FSM de code_groups
+        ├── transmit_ordered_set.v      # FSM de ordered_set
+        └── transmit_wrapper.v          # Wrapper para todo el módulo de transmit
+```
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
 ## Diagrama de bloques y resultados de pruebas individuales
 
 ---
@@ -162,19 +218,20 @@ Para garantizar coherencia, calidad y un buen trabajo en paralelo, se utilizó.
 
 ## Resultados en conjunto
 ---
+Como prueba se utilizó un tester similar al del transmisor, ya que este es el que genera los code groups.
 
+<p align="center">
+  <img src="images/prueba_complete_01.png" alt="Prueba Receive 2" width="100%">
+  <br>
+  <em>Figura 9. Prueba loopback.</em>
+</p>
 
+<p align="center">
+  <img src="images/prueba2_complete.png" alt="Prueba Receive 2" width="100%">
+  <br>
+  <em>Figura 10. Prueba loopback con los 20 code-groups seleccionados.</em>
+</p>
 
-
-
-
-
-
-
-
-
-<br>
-<br>
 <br>
 <br>
 <br>
