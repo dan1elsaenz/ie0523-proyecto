@@ -73,7 +73,7 @@ module receive (
   decode #(
       .CG_WIDTH   (10),
       .OCTET_WIDTH(8)
-  ) decode_inst (
+  ) decode (
       .rx_code_group       (rx_code_group),
       .rx_running_disparity(rx_running_disparity),
       .rx_octet            (decoded_octet)
