@@ -27,15 +27,41 @@ GTKW       := layout.gtkw
 define LAYOUT
 [timestart] 0
 [size] 1434 835
-[pos] 2 2
-*-4.435139 -1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
-[sst_width] 255
+[pos] 3 8
+*-6.000000 -1 85 195 325 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[sst_width] 40
 [signals_width] 177
-[sst_expanded] 1
+[sst_expanded] 0
 [sst_vpaned_height] 241
-@29
-testbench.gtx_clk
 @28
+testbench.gtx_clk
+[color] 1
 testbench.mr_main_reset
 @200
 -
@@ -43,11 +69,13 @@ testbench.mr_main_reset
 @28
 testbench.tx_en
 @22
+[color] 3
 testbench.txd[7:0]
 @200
 -
 -PMA
 @22
+[color] 2
 testbench.tx_code_group[9:0]
 @28
 testbench.tx_wrapper.cg.pudr
