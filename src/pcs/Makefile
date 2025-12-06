@@ -26,50 +26,62 @@ GTKW       := layout.gtkw
 # Configuración del layout de GTKWave
 define LAYOUT
 [timestart] 0
-[size] 1333 834
-[pos] 720 2
-*-6.000000 7 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[size] 1434 835
+[pos] 3 8
+*-6.000000 -1 95 225 345 485 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
 [treeopen] testbench.
-[treeopen] testbench.pcs.
-[treeopen] testbench.pcs.transmit.
-[sst_width] 255
-[signals_width] 177
-[sst_expanded] 1
+[sst_width] 40
+[signals_width] 193
+[sst_expanded] 0
 [sst_vpaned_height] 241
 @28
 testbench.clk
+[color] 1
 testbench.mr_main_reset
 @200
 -
 -TRANSMIT
 @22
+[color] 3
 testbench.pcs.transmit.cg.octet[7:0]
 testbench.pcs.transmit.tx_code_group[9:0]
 @28
+testbench.pcs.transmit.cg.tx_disparity
+testbench.pcs.transmit.cg.tx_even
 testbench.pcs.transmit.tx_en
 @22
+[color] 2
 testbench.pcs.txd[7:0]
-@200
--
--RECEIVE
-@22
-testbench.pcs.receive.state[5:0]
-testbench.pcs.receive.rx_code_group[9:0]
-testbench.pcs.receive.rxd[7:0]
-@28
-testbench.pcs.receive.rx_dv
-testbench.pcs.receive.rx_er
 @200
 -
 -SYNC
 @22
 testbench.pcs.sync.state[9:0]
 @28
-testbench.pcs.sync.rx_even
 testbench.pcs.receive.sync_status
-testbench.pcs.sync.comma_pudi
+testbench.pcs.sync.rx_even
 @22
 testbench.pcs.sync.sudi[10:0]
+@200
+-
+-RECEIVE
+@22
+testbench.pcs.receive.state[5:0]
+testbench.pcs.receive.rx_code_group[9:0]
+@28
+testbench.pcs.receive.rx_running_disparity
+@22
+[color] 3
+testbench.pcs.receive.rxd[7:0]
+@28
+[color] 5
+testbench.pcs.receive.rx_dv
+[color] 5
+testbench.pcs.receive.rx_er
 [pattern_trace] 1
 [pattern_trace] 0
 endef

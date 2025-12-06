@@ -84,7 +84,7 @@ module tester #(
     /*
     * Prueba 0: IDLEs (sincronización)
     */
-    ciclos(15);
+    ciclos(9);
 
     /*
     * Prueba 1: Carrier extend y IDLE disparity OK
@@ -126,7 +126,6 @@ module tester #(
     tx_en = 1;
     @(posedge clk) txd = `D11_3_8B;
     @(posedge clk) txd = `D23_1_8B;
-    @(posedge clk) txd = `D1_0_8B;
     @(posedge clk) txd = `D31_1_8B;
 
     @(posedge clk) tx_en = 0;

@@ -69,10 +69,12 @@ module pcs #(
   /*
   * Instanciación de SYNCHRONIZATION
   */
-  synchronization #() sync (
+  synchronization #(
+      .CG_WIDTH(CG_WIDTH)
+  ) sync (
       .mr_main_reset   (mr_main_reset),
       .clk             (clk),
-      .valid_pudi      (pudr),
+      .indicate        (pudr),
       .pudi            (tx_code_group),
       .code_sync_status(code_sync_status),
       .rx_even         (rx_even),
