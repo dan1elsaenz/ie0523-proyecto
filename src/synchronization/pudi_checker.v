@@ -1,12 +1,14 @@
 /*
 * =============================================================================
 *
-* - File        : PUDI_checker.v
+* - File        : pudi_checker.v
 * - Autor       : Rodrigo E. Sanchez Araya
 * - Curso       : Sistemas Digitales II, Universidad de Costa Rica
-* - Fecha       : 4-12-2025
+* - Fecha       : 05-12-2025
 *
 * - Descripción :
+*   Módulo para realizar la validación y verificación de que existe el pudi
+*   recibido.
 *
 * =============================================================================
 */
@@ -25,18 +27,18 @@ module pudi_checker #(
     parameter integer CG_WIDTH = 10
 ) (
     // INPUT
-    input [CG_WIDTH-1:0] pudi,
+    input      [CG_WIDTH-1:0] pudi,
     // OUTPUT
-    output reg pudi_invalid,
-    output reg comma_pudi,
-    output reg data_pudi
+    output reg                pudi_invalid,
+    output reg                comma_pudi,
+    output reg                data_pudi
 );
 
   always @(*) begin
     // Valores por defecto
     pudi_invalid = 1'b0;
-    data_pudi = 1'b0;
-    comma_pudi = 1'b0;
+    data_pudi    = 1'b0;
+    comma_pudi   = 1'b0;
 
     case (pudi)
 
@@ -257,7 +259,6 @@ module pudi_checker #(
       `D4_6_10B_RD_P: begin
         pudi_invalid = 1'b0;
         data_pudi    = 1'b1;
-
       end
 
       `D4_6_10B_RD_N: begin
