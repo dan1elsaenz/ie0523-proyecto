@@ -6,8 +6,8 @@
 # - Fecha       : 05-12-2025
 #
 # - Descripción :
-#   Con este archivo se realiza todos los comandos que se necesitan para 
-#	realizar el código. Logrando realizar la compilación y la simulación en 
+#   Con este archivo se realiza todos los comandos que se necesitan para
+#	realizar el código. Logrando realizar la compilación y la simulación en
 #   GTKWave, además el GTKWave trae una personalización para ahorrarse la
 #   vista de ondas y además de colocarle color a las ondas.
 #
@@ -17,7 +17,7 @@
 # Parámetros de compilación y simulación
 OUT        := a.out
 VCD        := resultados.vcd
-SRC        := testbench_receive.v
+SRC        := testbench.v
 TOP        := testbench
 GTKW       := layout.gtkw
 
@@ -56,7 +56,7 @@ testbench.rxd[7:0]
 -
 -INFO
 @23
-testbench.rec.state[8:0]
+testbench.rec.state[5:0]
 @28
 testbench.rec.rx_running_disparity
 @22
