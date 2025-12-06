@@ -1,38 +1,79 @@
+/*
+* =============================================================================
+*
+* - File        : testbench.v
+* - Autor       : Rodrigo E. Sanchez Araya    (C37259)
+*                 Daniel Alberto Sáenz Obando (C37099)
+* - Curso       : Sistemas Digitales II, Universidad de Costa Rica
+* - Fecha       : 05-12-2025
+*
+* - Descripción :
+*   Banco de pruebas para el sincronizador.
+*
+* =============================================================================
+*/
+
+/*
+* Incluir módulos
+*/
 `include "tester.v"
 `include "synchronization.v"
 `include "PUDI_checker.v"
 
+
 module testbench;
 
+  // Guardar variables para visualizar en GTKWave
   initial begin
     $dumpfile("resultados.vcd");
     $dumpvars(-1, U0);
   end
 
-  wire        mr_main_reset;
-  wire        clk;
-  wire        valid_pudi;  // Se conecta a PUDR
-  wire [ 9:0] pudi;  // Se conecta al code_group
-  wire        code_sync_status;
-  wire        rx_even;
-  wire [10:0] sudi;
+  /*
+  * Parámetros locales
+  */
+  localparam CG_WIDTH = 10;
+  localparam CLK_PERIOD = 10;
 
 
-  synchronization U0 (
-      .clk         (clk),
-      .mr_main_reset(mr_main_reset),
-      .valid_pudi(valid_pudi),
-      .pudi(pudi),
+  /*
+  * Cables de conexión
+  */
+  wire                mr_main_reset;
+  wire                clk;
+  wire                valid_pudi;  // Se conecta a PUDR
+  wire [CG_WIDTH-1:0] pudi;  // Se conecta al code_group
+  wire                code_sync_status;
+  wire                rx_even;
+  wire [  CG_WIDTH:0] sudi;
+
+
+  /*
+  * Instanciación de synchronization
+  */
+  synchronization #(
+      .CG_WIDTH(CG_WIDTH)
+  ) U0 (
+      .clk             (clk),
+      .mr_main_reset   (mr_main_reset),
+      .indicate        (indicate),
+      .pudi            (pudi),
       .code_sync_status(code_sync_status),
-      .rx_even(rx_even),
-      .sudi(sudi)
+      .rx_even         (rx_even),
+      .sudi            (sudi)
   );
 
 
-  probador P0 (
+  /*
+  * Instanciación del tester
+  */
+  tester #(
+      .CG_WIDTH  (CG_WIDTH),
+      .CLK_PERIOD(CLK_PERIOD)
+  ) P0 (
       .clk             (clk),
       .mr_main_reset   (mr_main_reset),
-      .valid_pudi      (valid_pudi),
+      .indicate        (indicate),
       .pudi            (pudi),
       .code_sync_status(code_sync_status),
       .rx_even         (rx_even),

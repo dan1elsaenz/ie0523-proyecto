@@ -1,8 +1,27 @@
+/*
+* =============================================================================
+*
+* - File        : tester.v
+* - Autor       : Rodrigo E. Sanchez Araya    (C37259)
+*                 Daniel Alberto Sáenz Obando (C37099)
+* - Curso       : Sistemas Digitales II, Universidad de Costa Rica
+* - Fecha       : 05-12-2025
+*
+* - Descripción :
+*   Probador para el sincronizador. Se realizaron pruebas para verificar el
+*   inicio de la sincronización y la pérdida de sincronía bajo diferentes
+*   condiciones.
+*
+* =============================================================================
+*/
 
-
+/*
+* Incluir módulos
+*/
 `include "../constants/code_group_constants.v"
 
-module probador #(
+
+module tester #(
     parameter integer CG_WIDTH   = 10,
     parameter integer CLK_PERIOD = 10
 ) (
@@ -13,7 +32,7 @@ module probador #(
     // OUTPUT
     output reg                 mr_main_reset,
     output reg                 clk,
-    output reg                 valid_pudi,        // Se conecta a PUDR
+    output reg                 indicate,          // Se conecta a PUDR
     output reg  [CG_WIDTH-1:0] pudi               // Se conecta al code_group
 );
 
@@ -24,127 +43,322 @@ module probador #(
     #(CLK_PERIOD / 2) clk = ~clk;
   end
 
+  /*
+  * Pruebas realizadas
+  */
   initial begin
-    // inicializaciones
+    // Valores iniciales
     pudi = '0;
-    clk  = 0;
+    clk = 0;
+    indicate = 0;
     #5;
 
-    valid_pudi = 0;
+    /*
+    * Reiniciar
+    */
     mr_main_reset = 1;
     @(posedge clk) mr_main_reset = 0;
     @(posedge clk);
 
     /*
-    * COMMA
+    * Sincronizar
     */
-    valid_pudi = 1;
+    // COMMA
+    indicate = 1;
     pudi = `K28_5_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
-    /*
-    * COMMA
-    */
-    valid_pudi = 1;
+    // COMMA
+    indicate = 1;
     pudi = `K28_5_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
-    /*
-    * COMMA
-    */
-    valid_pudi = 1;
+    // COMMA
+    indicate = 1;
     pudi = `K28_5_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
-    /*
-    * COMMA
-    */
-    valid_pudi = 1;
+    // COMMA
+    indicate = 1;
     pudi = `K28_5_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
 
     /*
     * Ya está sincronizado
-    * Ahora se manda uno inválido y uno válido
+    * Ahora se manda uno inválido y se vuelve a sincronizar
     */
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b11_1111_1111;
     @(posedge clk);
 
     // Vuelve a sincronizarse
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D5_6_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D0_0_10B_RD_N;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    /*
+    * Dos inválidos y vuelve a sincronizarse
+    */
+    indicate = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
+
+    // Vuelve a sincronizarse
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    /*
+    * Tres inválidos y vuelve a sincronizarse
+    */
+    indicate = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    // Vuelve a sincronizarse
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    /*
+    * Uno inválido y mientras se vuelve a sincronizar recibe otro inválido
+    */
+    indicate = 1;
+    pudi = 10'b11_1111_1111;
+    @(posedge clk);
+
+    // Vuelve a sincronizarse
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = 10'b00_0000_0001;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D0_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D2_0_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D5_6_10B_RD_N;
+    @(posedge clk);
+
+    indicate = 1;
+    pudi = `D16_2_10B_RD_P;
     @(posedge clk);
 
 
     /*
-    * Desincronización completa
+    * Pérdida de sincronización completa
+    * 4 inválidos
     */
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b11_1111_1111;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b00_0000_0001;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b11_1111_1111;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b00_0000_0001;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b11_1111_1111;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b00_0000_0001;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b11_1111_1111;
     @(posedge clk);
 
-    valid_pudi = 1;
+    indicate = 1;
     pudi = 10'b00_0000_0001;
     @(posedge clk);
 
     #20 $finish;
-
   end
-
-
 
 endmodule
