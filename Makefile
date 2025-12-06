@@ -26,7 +26,7 @@ SUBDIRS := $(PCS) $(TX) $(RX) $(SYNC)
 
 .PHONY: all clean
 
-all: PCS
+all: pcs
 
 pcs:
 	$(MAKE) -C $(PCS)
