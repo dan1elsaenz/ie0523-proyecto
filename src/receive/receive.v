@@ -51,6 +51,7 @@ module receive (
   // Running disparity actual y siguiente
   reg         rx_running_disparity;
   wire        next_rx_running_disparity;
+  wire        rx_dv_decoded;
 
   // Asignación de señales de entrada
   assign rx_code_group = sudi[10:1];  // Asignar los 10 bits de entrada
@@ -76,7 +77,8 @@ module receive (
   ) decode (
       .rx_code_group       (rx_code_group),
       .rx_running_disparity(rx_running_disparity),
-      .rx_octet            (decoded_octet)
+      .rx_octet            (decoded_octet),
+      .rx_dv_decoded       (rx_dv_decoded)
   );
 
 
@@ -233,7 +235,7 @@ module receive (
 
             // Si no es ninguno de los anteriores, continuar recibiendo datos
           end else if (rx_code_group != `K28_5_10B_RD_P && rx_code_group != `K28_5_10B_RD_N) begin
-            rx_dv = 1'b1;
+            rx_dv = rx_dv_decoded;
             rxd   = decoded_octet;
           end
         end  // RECEIVE

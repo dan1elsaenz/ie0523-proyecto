@@ -27,13 +27,16 @@ module decode #(
 ) (
     input  wire [   CG_WIDTH-1:0] rx_code_group,         // entrada de 10 bits
     input  wire                   rx_running_disparity,  // si es 1 es positivo, si es 0 es negativo
-    output reg  [OCTET_WIDTH-1:0] rx_octet               // salida de 8 bits
+    output reg  [OCTET_WIDTH-1:0] rx_octet,              // salida de 8 bits
+    output reg                    rx_dv_decoded                  // Validez del rx
 );
 
   /*
   * Lógica combinacional
   */
   always @(*) begin
+    // Predeterminado
+    rx_dv_decoded = 1;
 
     case ({
       rx_running_disparity, rx_code_group
@@ -141,7 +144,10 @@ module decode #(
       {1'b1, `D4_6_10B_RD_P} : rx_octet = `D4_6_8B;
       {1'b0, `D4_6_10B_RD_N} : rx_octet = `D4_6_8B;
 
-      default: rx_octet = 8'b0000_0000;
+      default: begin
+        rx_octet = 8'b0000_0000;
+        rx_dv_decoded    = 0;
+      end
 
     endcase
 
