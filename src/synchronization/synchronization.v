@@ -87,8 +87,8 @@ module synchronization #(
   /*
   * Assigns auxiliares para variables intermedias
   */
-  assign cggood = ~(pudi_invalid | (comma_pudi & rx_even)) & (pudi != '0);
-  assign cgbad  = (pudi_invalid | (comma_pudi & rx_even)) & (pudi != '0);
+  assign cggood = ~(pudi_invalid | (comma_pudi & rx_even));
+  assign cgbad  = (pudi_invalid | (comma_pudi & rx_even));
 
 
   /*

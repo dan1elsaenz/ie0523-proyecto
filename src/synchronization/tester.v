@@ -61,7 +61,7 @@ module tester #(
     @(posedge clk);
 
     /*
-    * Sincronizar
+    * Prueba 1: Sincronizar
     */
     // COMMA
     indicate = 1;
@@ -101,6 +101,7 @@ module tester #(
 
 
     /*
+    * Prueba 2: Un dato inválido
     * Ya está sincronizado
     * Ahora se manda uno inválido y se vuelve a sincronizar
     */
@@ -134,6 +135,7 @@ module tester #(
     @(posedge clk);
 
     /*
+    * Prueba 3: Dos inválidos consecutivos
     * Dos inválidos y vuelve a sincronizarse
     */
     indicate = 1;
@@ -186,6 +188,7 @@ module tester #(
     @(posedge clk);
 
     /*
+    * Prueba 4: Tres inválidos consecutivos
     * Tres inválidos y vuelve a sincronizarse
     */
     indicate = 1;
@@ -262,7 +265,7 @@ module tester #(
     @(posedge clk);
 
     /*
-    * Uno inválido y mientras se vuelve a sincronizar recibe otro inválido
+    * Prueba 5: Inválidos intercalados durante resincronización
     */
     indicate = 1;
     pudi = 10'b11_1111_1111;
@@ -323,7 +326,7 @@ module tester #(
 
 
     /*
-    * Pérdida de sincronización completa
+    * Prueba 6: Pérdida de sincronización completa
     * 4 inválidos
     */
     indicate = 1;
