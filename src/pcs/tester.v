@@ -132,7 +132,7 @@ module tester #(
     txd = 0;
 
     // Ciclos intermedios
-    ciclos(7);
+    ciclos(8);
 
 
     /*
@@ -166,6 +166,19 @@ module tester #(
 
     // Ciclos intermedios
     ciclos(7);
+
+
+    /*
+    * Prueba 5: Pérdida de sincronización
+    */
+    tx_en = 1;
+    @(posedge clk) txd = 10000001;
+    @(posedge clk) txd = 10000001;
+    @(posedge clk) txd = 10000001;
+    @(posedge clk) txd = 10000001;
+    @(posedge clk) txd = 10000001;
+    @(posedge clk) tx_en = 0;
+    txd = 0;
 
     $finish;
   end

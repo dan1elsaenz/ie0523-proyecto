@@ -27,12 +27,13 @@ GTKW       := layout.gtkw
 define LAYOUT
 [timestart] 0
 [size] 1434 835
-[pos] 3 8
-*-6.000000 -1 95 225 345 485 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[pos] 3 11
+*-6.000000 -1 95 225 345 485 735 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
 [markername] AA
 [markername] BB
 [markername] CC
 [markername] DD
+[markername] EE
 [treeopen] testbench.
 [sst_width] 40
 [signals_width] 193
