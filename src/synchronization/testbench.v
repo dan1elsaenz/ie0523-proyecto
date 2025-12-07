@@ -16,9 +16,8 @@
 /*
 * Incluir módulos
 */
-`include "tester.v"
-`include "synchronization.v"
-`include "PUDI_checker.v"
+`include "../synchronization/tester.v"
+`include "../synchronization/synchronization.v"
 
 
 module testbench;
