@@ -1,0 +1,377 @@
+\section{Plan de pruebas}
+
+En este apartado, se describen las pruebas desarrolladas para cada uno de los submódulos individuales, así como para el PCS completo que integra los tres submódulos.
+Estas fueron implementadas para asegurar el correcto funcionamiento de las máquinas de estados separadas, así como en conjunto.
+Se probó una variedad de casos para cada uno, donde se contempló el funcionamiento normal y algunas variaciones.
+
+\subsection{Módulo \texttt{TRANSMIT}}
+
+En esta subsección se describen las pruebas funcionales aplicadas al módulo de transmisión completo, utilizando el probador en \texttt{src/transmit/tester.v}.
+Cada prueba define una secuencia de octetos de datos (\texttt{txd}) y una activación de la señal \texttt{tx\_en}, con el objetivo de verificar el comportamiento del transmisor respecto a:
+\begin{itemize}
+  \item La generación correcta de los \textit{ordered sets}: \texttt{/S/}, \texttt{/D/}, \texttt{/T/}, \texttt{/R/} e \texttt{/I/}.
+  \item La presencia o ausencia de \textit{carrier extend} (\texttt{/R R/} después de \texttt{/T/}).
+  \item El manejo del \textit{running disparity} y la selección del IDLE correcto (\texttt{/I1/} o \texttt{/I2/}).
+\end{itemize}
+
+A continuación se detalla cada una de las pruebas definidas.
+
+\subsubsection*{Prueba 0: IDLEs después de \texttt{reset}}
+
+\begin{itemize}
+  \item \textbf{Descripción:} Tras el \texttt{reset}, se espera un período de inactividad donde \texttt{tx\_en = 0} y el transmisor permanece en estado de \texttt{IDLE}.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El transmisor debe generar únicamente \textit{ordered sets} de tipo \texttt{/I/} (secuencias \texttt{/K28.5/} seguidas de \texttt{/D16.2/}.
+      \item No deben aparecer símbolos de inicio de trama (\texttt{/S/}), datos (\texttt{/D/}), terminación (\texttt{/T/}) ni extendidos (\texttt{/R/}) mientras \texttt{tx\_en = 0}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 1: Carrier extend y IDLE con disparidad correcta}
+
+\begin{itemize}
+  \item \textbf{Descripción:} Se habilita la transmisión (\texttt{tx\_en = 1}) y se envía la siguiente secuencia de datos:
+    \[
+      \texttt{D11\_3, D23\_1, D7\_4, D12\_5}
+    \]
+    Posteriormente, \texttt{tx\_en} se desactiva (\texttt{tx\_en = 0}), lo que fuerza el envío del \textit{ordered set} de terminación \texttt{/T/}. Según el estándar y la lógica implementada en \texttt{transmit\_ordered\_set}, esta configuración debe producir \emph{carrier extend}, pues el primer /R/ está en ciclo par.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La secuencia de \textit{ordered sets} debe ser:
+      \[
+        \texttt{/S/ D11\_3 D23\_1 D7\_4 D12\_5 /T/ /R/ /R/}
+      \]
+      es decir, se observa \texttt{/T/} seguido de dos \texttt{/R/}, indicando \textit{carrier extend}.
+      \item Tras el \textit{carrier extend}, el transmisor debe retornar al envío de IDLEs \texttt{/I/} con un \emph{running disparity} negativo.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 2: Sin carrier extend e IDLE con disparidad errónea}
+
+\begin{itemize}
+  \item \textbf{Descripción:} Se habilita la transmisión y se envía la secuencia:
+    \[
+      \texttt{D11\_3, D23\_1, D7\_4, D12\_5, D8\_6}
+    \]
+    Luego se desactiva \texttt{tx\_en}. Esta combinación de datos está seleccionada para que el \emph{running disparity} al final de la trama sea \textbf{positivo}, pero sin requerir carrier extend.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La secuencia de \textit{ordered sets} debe ser:
+      \[
+        \texttt{/S/ D11\_3 D23\_1 D7\_4 D12\_5 D8\_6 /T/ /R/}
+      \]
+      \item Como el \textit{running disparity} final de la trama es positivo, el siguiente IDLE debe ser \texttt{/I1/}, compuesto por:
+        \[
+          \texttt{/K28.5/ seguido de /D5.6/}
+        \]
+        con el objetivo de corregir la disparidad y devolverla al valor negativo deseado.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 3: Sin carrier extend e IDLE con disparidad correcta}
+
+\begin{itemize}
+  \item \textbf{Descripción:} Se habilita la transmisión y se envía la secuencia:
+    \[
+      \texttt{D11\_3, D23\_1, D1\_0, D31\_1}
+    \]
+    para luego desactivar \texttt{tx\_en}. En este caso, la combinación de datos se escogió para que el \textit{running disparity} al final de la trama sea \textbf{negativo}.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La secuencia de \textit{ordered sets} debe ser:
+      \[
+        \texttt{/S/ D11\_3 D23\_1 D1\_0 D31\_1 /T/ /R/}
+      \]
+      nuevamente sin \textit{carrier extend}.
+      \item Como el \textit{running disparity} final es negativo, el IDLE que sigue debe ser \texttt{/I2/}, compuesto por:
+        \[
+          \texttt{/K28.5/ seguido de /D16.2/}
+        \]
+        lo cual mantiene la disparidad en el valor negativo especificado por el estándar.
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{Módulo \texttt{SYNCHRONIZATION}}
+
+\subsubsection*{Prueba 1: Sincronización inicial sin errores}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Tras el reinicio, se envían cuatro secuencias IDLE del tipo \texttt{/I2/}, cada una compuesta por:
+    \[
+      \texttt{/K28.5/} \rightarrow \texttt{/D16.2/}
+    \]
+    con \texttt{indicate = 1} en cada ciclo. Esta secuencia contiene el carácter de \texttt{COMMA}, por lo que la PCS debe usarla para adquirir sincronización.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El bloque debe entrar en estado sincronizado después de recibir suficientes \texttt{COMMA}, lo cual equivale a  \texttt{code\_sync\_status=1}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 2: Un dato inválido}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Tras estar sincronizado, se ingresa un único code-group inválido:
+    \[
+      \texttt{11\_1111\_1111}
+    \]
+    seguido inmediatamente de una secuencia válida:
+    \[
+      \texttt{D5\_6, D16\_2, D0\_0, D2\_0, D5\_6, D16\_2}
+    \]
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La lógica debe detectar el inválido y pasar al estado de \texttt{SYNC\_ACQUIRED\_2}.
+      \item Al recibir nuevamente 4 code-groups válidos, la PCS debe \textbf{mantener la sincronización}, ya que un único error no supera el umbral de pérdida y vuelve a \texttt{SYNC\_ACQUIRED\_1}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 3: Dos inválidos consecutivos}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se envían dos code-groups inválidos:
+    \[
+      \texttt{11\_1111\_1111,\ 00\_0000\_0001}
+    \]
+    seguidos de una secuencia de code-groups válidos del tipo:
+    \[
+      \texttt{D5\_6, D16\_2, D0\_0, D2\_0, \dots}
+    \]
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item Transición al estado \texttt{SYNC\_ACQUIRED\_3}.
+      \item Los code-groups válidos posteriores deben permitir que la PCS vuelva al estado estable \texttt{SYNC\_ACQUIRED\_1}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 4: Tres inválidos consecutivos}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se envían tres code-groups inválidos seguidos:
+    \[
+      \texttt{11\_1111\_1111,\ 00\_0000\_0001,\ 11\_1111\_1111}
+    \]
+    y luego una secuencia extensa de code-groups válidos.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El sistema debe acercarse al umbral de pérdida de sincronización (4 inválidos).
+      \item La secuencia posterior de 12 code-groups válidos debe permitir recuperar la sincronía.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 5: Inválidos intercalados durante resincronización}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se envía primero un inválido:
+    \[
+      \texttt{11\_1111\_1111}
+    \]
+    luego comienzan a recibirse code-groups válidos, pero durante ese proceso se inyecta otro inválido intercalado:
+    \[
+      \texttt{00\_0000\_0001}
+    \]
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La lógica no debe perder sincronía prematuramente.
+      \item El sistema debe continuar volver a \texttt{SYNC\_ACQUIRED\_1} después de recibir 8 code-groups válidos seguidos.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 6: Pérdida completa de sincronización}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se colocan cuatro code-groups inválidos, alternando patrones incorrectos:
+    \[
+      \texttt{11\_1111\_1111,\ 00\_0000\_0001,\ 11\_1111\_1111,\ 00\_0000\_0001,\dots}
+    \]
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El contador de errores debe superar el umbral definido por la arquitectura y pasar al estado \texttt{LOSS\_OF\_SYNC}.
+      \item La PCS debe declarar pérdida de sincronización y esperar nuevos COMMA para adquirirla de nuevo.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Módulo \texttt{RECEIVE}}
+
+Para el caso del \texttt{RECEIVE}, se realizaron tres pruebas para corroborar el correcto funcionamiento de este módulo.
+
+\subsubsection*{Prueba 1: Envío de datos con receptor sincronizado}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    El receptor entra en estado sincronizado mediante la activación de la señal \texttt{sync\_status}.  
+    Una vez sincronizado, recibe el ordered set \texttt{/S/} y procede con la decodificación de los datos, enviándolos posteriormente a la interfaz GMII.  
+    Los datos recibidos durante esta prueba corresponden a los mostrados en el Cuadro \ref{prueba1_receive}.
+
+    \begin{table}[H]
+        \centering
+        \begin{tabular}{ccc}
+        \hline
+            Dato de 10 bits recibido & Running Disparity & Valor octeto\\ \hline
+             110100\,1100 & Negativo & 6B\\
+             111010\,1001 & Negativo & 37\\ 
+             000111\,0010 & Positivo & 87\\ 
+             111001\,0110 & Negativo & C8\\ \hline
+        \end{tabular}
+        \caption{Datos de 10 bits recibidos en la prueba 1.}
+        \label{prueba1_receive}
+    \end{table}
+
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El receptor debe decodificar correctamente cada code-group de acuerdo con su disparidad.
+      \item Los valores octeto deben enviarse al GMII respetando el orden y manteniendo la coherencia de disparidad según el estándar.
+      \item Termina en /T/R/;
+    \end{itemize}
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsubsection*{Prueba 2: Envío de datos con receptor no sincronizado}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    En esta prueba, la señal \texttt{sync\_status} no se encuentra activa, por lo que el receptor no está sincronizado.  
+    Los code-groups recibidos nuevamente corresponden al Cuadro \ref{prueba1_receive}, pero al no existir sincronización válida, el receptor no debe entregar datos a la interfaz GMII.
+
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item Aunque se reciba la misma secuencia de code-groups que en la prueba anterior, no debe generarse salida hacia GMII.
+      \item El receptor debe permanecer en estado no-sincronizado y descartar los datos recibidos, cumpliendo con el estándar.
+    \end{itemize}
+\end{itemize}
+
+% -------------------------------------------------------
+
+\subsubsection*{Prueba 3: Terminación incorrecta /T/R/R/}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    En condiciones normales, la terminación de la trama debe ser \texttt{/T/R/I/}.  
+    En esta prueba se fuerza un escenario incorrecto donde la terminación recibida es \texttt{/T/R/R/}.  
+    Nuevamente, los datos previos recibidos corresponden al Cuadro \ref{prueba1_receive}.
+
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item El receptor debe detectar que la secuencia \texttt{/T/R/R/} no cumple con el final válido de trama según 1000BASE-X.
+      \item Debe irse al estado TRR extend en donde ahí rxd tomará el valor de 0x0F y se activa la señal de rx er.
+      \item Seguido a esto concluirá normalmente y se devuelve a esperar un secuencia de envío de datos.
+    \end{itemize}
+\end{itemize}
+
+\subsection{PCS completa}
+
+Ahora bien, en esta sección se muestra el plan de pruebas desarrollado para los tres módulos conectados entre sí en modo de \textit{loopback}, como lo solicita el enunciado.
+
+
+\subsubsection*{Prueba 0: IDLEs y adquisición de sincronización}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Con \texttt{tx\_en = 0} y mediante la tarea \texttt{ciclos(9)}, el transmisor envía únicamente \texttt{/I/} (IDLEs).  
+    Esta fase permite que el sincronizador del PCS detecte los \textit{COMMA} y adquiera sincronización.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item \texttt{code\_sync\_status = 1}.
+      \item No deben generarse errores en \texttt{rx\_er} ni datos válidos en \texttt{rx\_dv}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 1: Carrier extend e IDLE con disparidad correcta}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Con \texttt{tx\_en = 1} se envía la trama:
+    \[
+      \texttt{D11\_3,\ D23\_1,\ D7\_4,\ D12\_5}
+    \]
+    y luego se desactiva \texttt{tx\_en}.  
+    La longitud del paquete requiere insertar \texttt{/R/} como \emph{carrier extend} para que el siguiente /K28.5/ quede en ciclo par; además, la disparidad final permite que el IDLE resultante sea correcto.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item \texttt{rx\_dv} se activa únicamente durante la transmisión de datos.
+      \item La secuencia de fin de trama debe ser \texttt{/T/ /R/ /R/} (carrier extend).
+      \item Se activa \textbf{\texttt{rx\_er}} en el último \texttt{/R/}, como corresponde al final del carrier extend.
+      \item La disparidad del IDLE posterior es la correcta según el \emph{running disparity}.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection*{Prueba 2: Sin carrier extend e IDLE con disparidad incorrecta}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se transmite la trama:
+    \[
+      \texttt{D11\_3,\ D23\_1,\ D7\_4,\ D12\_5,\ D8\_6}
+    \]
+    cuyas cinco codificaciones producen un \emph{running disparity} final que genera un IDLE \textbf{incorrecto}.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item \textbf{No hay carrier extend}: la secuencia termina con \texttt{/T/ /R/}.
+      \item La PCS debe escoger el IDLE equivocado según la disparidad obtenida, lo cual permite validar el caso de disparidad errónea (/D5.6/).
+      \item \texttt{rx\_dv} se activa durante los datos y se apaga al cerrar la trama.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection*{Prueba 3: Sin carrier extend e IDLE con disparidad correcta}
+
+\begin{itemize}
+  \item \textbf{Descripción:}
+    Se envía una trama corta:
+    \[
+      \texttt{D11\_3,\ D23\_1,\ D31\_1}
+    \]
+    que finaliza con una disparidad coherente con el IDLE siguiente sin necesidad de carrier extend.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item \textbf{No hay carrier extend}: la terminación es solamente \texttt{/T/ /R/}.
+      \item La disparidad del IDLE posterior es correcta (/D16.2/ después del /K28.5/.
+      \item \texttt{rx\_dv} se activa únicamente por los tres octetos válidos.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection*{Prueba 4: Envío del subconjunto completo de datos definidos}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se transmite un conjunto representativo amplio de datos:
+    \[
+      \texttt{D5\_6,\ D16\_2,\ D0\_0,\ D1\_0,\dots,\ D4\_6}
+    \]
+    cubriendo todos los casos contemplados en la codificación 8b/10b (subconjunto del original).
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item La decodificación es correcta y \texttt{rxd} reproduce todos los valores en el orden enviado.
+      \item \texttt{rx\_dv} permanece alto durante toda la transmisión.
+    \end{itemize}
+\end{itemize}
+
+
+\subsubsection*{Prueba 5: Pérdida completa de sincronización}
+
+\begin{itemize}
+  \item \textbf{Descripción:}  
+    Se transmiten cinco octetos inválidos:
+    \[
+      \texttt{0x81,\ 0x81,\ 0x81,\ 0x81,\ 0x81}
+    \]
+    Como aclaración, no es que los datos sean inválidos, pues el estándar presenta la codificación para los 256 datos de 8 bits. Sin embargo, para simular un dato inválido, se utilizaron datos que no están dentro del conjunto de code-groups definidos.
+    En una implementación real, este caso de simulación no funcionaría, pero permite que se detecten code-groups en el sincronizador que no existen.
+  \item \textbf{Resultado esperado:}
+    \begin{itemize}
+      \item Se pierde la sincronización: \texttt{code\_sync\_status = 0}.
+      \item Los datos no deben entregarse a través de \texttt{rxd}.
+      \item \texttt{rx\_dv} permanece en cero porque no hay datos válidos.
+      \item Se pueden activar errores en \texttt{rx\_er}, dependiendo del diseño.
+    \end{itemize}
+\end{itemize}
+
+
