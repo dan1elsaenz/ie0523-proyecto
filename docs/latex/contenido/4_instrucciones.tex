@@ -1,0 +1,44 @@
+\section{Instrucciones de utilización de las simulaciones} \label{sec:instrucciones}
+
+% Esta sección debe mostrar los comandos necesarios para hacer funcionar la simulación en todos los casos que especifica el plan de pruebas.
+% Hay que suponer que el diseño de un grupo puede ser utilizado por otro grupo o el profesor.
+% Si los resultados no se pueden repetir porque no se conocen los comandos para hacer funcionar la simulación entonces es como si el diseño no funcionara del todo.
+% Se recomienda crear un Makefile de modo que se pueda correr todas las pruebas del caso con un solo comando en Icarus Verilog y GTKwave.
+Para realizar la simulación del programa y verificar la correcta ejecución de las pruebas realizadas para cada submódulo y de forma completa, se utilizaron \texttt{Makefile} que agrupan los comandos e instrucciones necesarias.
+Contienen las reglas necesarias para compilar con \texttt{iverilog}, ejecutar la simulación, generar el archivo de ondas \texttt{VCD} y abrir \texttt{GTKWave} con una configuración de señales definida.
+
+\subsection*{Requisitos de software}
+
+\begin{itemize}
+  \item \texttt{iverilog} (>12.0) (Icarus Verilog) para compilar el diseño estructural.
+  \item \texttt{vvp} (intérprete de Icarus Verilog) (>12.0) para ejecutar la simulación.
+  \item \texttt{gtkwave} para visualizar las señales simuladas.
+  \item \texttt{make} para automatizar la compilación y simulación.
+\end{itemize}
+
+\subsection*{Ejecución}
+
+Respecto a la compilación y ejecución de las simulaciones, se implementaron \texttt{Makefile} dentro del directorio de cada submódulo en la carpeta \texttt{src/}.
+Estos son controlados por un \texttt{Makefile} maestro en la raíz del repositorio.
+Por lo tanto, para la ejecución, se realiza desde la raíz del repositorio y basta con colocar el nombre del módulo que se desea simular después del comando \texttt{make}.
+Si no se coloca nada, \texttt{make} simula el PCS completo automáticamente.
+
+Entonces, para simular todo el PCS, utilice el siguiente comando:
+\begin{minted}{shell}
+make
+#o
+make pcs
+\end{minted}
+
+Para simular un único módulo, se realiza de la siguiente forma:
+\begin{minted}{shell}
+make [transmit|receive|sync]
+\end{minted}
+
+\subsection*{Eliminar archivos generados}
+
+Utilice el comando a continuación para eliminar los archivos de salida del proceso de compilación y simulación, estos son los generados en todo el repositorio:
+
+\begin{minted}{shell}
+make clean
+\end{minted}

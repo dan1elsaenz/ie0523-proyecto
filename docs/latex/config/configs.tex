@@ -1,0 +1,211 @@
+\documentclass[12pt]{article}
+
+\usepackage[utf8]{inputenc} % Caracteres UTF-8
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel} % Idioma español
+
+
+\usepackage{times}                                     
+
+\usepackage{FiraMono}
+\renewcommand{\ttdefault}{fvm}
+\DeclareTextFontCommand{\texttt}{\footnotesize\ttfamily}
+\usepackage{minted}
+\usemintedstyle{emacs}
+\setminted{
+  fontfamily=fvm, % FiraMono
+  linenos,
+  frame=lines,
+  framesep=2mm,
+  baselinestretch=1.2,
+  fontsize=\footnotesize,
+  breaklines=true,
+  tabsize=4,
+  numbersep=5pt,
+  xleftmargin=1.5em,
+  xrightmargin=1.5em
+}
+\setmintedinline{breaklines}
+
+
+\usepackage{amsfonts,amsmath,amssymb, amsthm} 
+
+
+\usepackage{latexsym}
+\usepackage[letterpaper]{geometry}    
+
+\usepackage{fancyhdr}
+\usepackage{placeins}                           
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{tabularx}
+\usepackage{array}
+
+
+
+% Book Tables
+\usepackage{booktabs}
+
+
+
+\usepackage{comment}
+
+% USE THIS TO CHANGE THE SPACING BETWEEN TABLES AND CAPTIONS!!!
+\usepackage[labelfont=bf,labelsep=period, skip=5pt]{caption}
+ 
+
+% TiKz
+\usepackage{pgf,tikz}
+\usepackage{mathrsfs}
+\usetikzlibrary{arrows}
+
+% PDF Plots
+\usepackage{pgfplots}
+\pgfplotsset{width=7cm,compat=1.10}
+
+% For side-by-side figures
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\renewcommand{\topfraction}{0.9} % Máx. parte superior ocupada por floats
+\renewcommand{\bottomfraction}{0.8} % Máx. parte inferior
+\renewcommand{\textfraction}{0.1} % Mínimo texto que debe quedar
+\renewcommand{\floatpagefraction}{0.8} % Requerido para página solo con floats
+
+
+
+% Editing: highlight and strikethru
+% \usepackage{soul}
+% \usepackage{todonotes}  % editing (make comments \todo{X}
+%\usepackage{lipsum}
+
+
+% OUTLINES
+\usepackage{outlines}
+\usepackage{enumitem}
+\setenumerate[1]{label=\arabic*.}
+\setenumerate[2]{label=(\alph*).}
+\setenumerate[3]{label=\roman*.}
+\setenumerate[4]{label=\alph*.}
+
+% Citations and References
+% https://merkel.texture.rocks/Latex/natbib.php
+
+
+% \makeatletter
+% \renewcommand\@biblabel[1]{}
+% \renewenvironment{thebibliography}[1]
+%      {\section*{\refname}%
+%       \@mkboth{\MakeUppercase\refname}{\MakeUppercase\refname}%
+%       \list{}%
+%            {\leftmargin0pt
+%             \@openbib@code
+%             \usecounter{enumiv}}%
+%       \sloppy
+%       \clubpenalty4000
+%       \@clubpenalty \clubpenalty
+%       \widowpenalty4000%
+%       \sfcode`\.\@m}
+%      {\def\@noitemerr
+%        {\@latex@warning{Empty `thebibliography' environment}}%
+%       \endlist}
+% \makeatother
+
+
+
+
+\RequirePackage{color}
+\definecolor{cej@color}{rgb}{0.5,0.37109375,0.59765625}
+\definecolor{abs}{rgb}{0.251,0.541,0.72.9}
+\definecolor{ffqqqq}{rgb}{1,0,0}
+\definecolor{qqqqff}{rgb}{0,0,1}
+\definecolor{cqcqcq}{rgb}{0.75,0.75,0.75}
+\definecolor{ttqqqq}{rgb}{0.2,0,0}
+\definecolor{ffxfqq}{rgb}{1,0.5,0}
+\definecolor{uuuuuu}{rgb}{0.27,0.27,0.27}
+\definecolor{ffqqff}{rgb}{1,0,1}
+\definecolor{xfqqff}{rgb}{0.5,0,1}
+\definecolor{xdxdff}{rgb}{0.49,0.49,1}
+\definecolor{red}{rgb}{1,0,0}
+\definecolor{blue}{rgb}{0,0,1}
+\definecolor{ccqqqq}{rgb}{0.8,0,0}
+\definecolor{fftttt}{rgb}{1,0.2,0.2}
+\definecolor{qqwuqq}{rgb}{0,0.39,0}
+\definecolor{qqqqff}{rgb}{0,0,1}
+\definecolor{wrwrwr}{rgb}{0.3803921568627451,0.3803921568627451,0.3803921568627451}
+\definecolor{sexdts}{rgb}{0.1803921568627451,0.49019607843137253,0.19607843137254902}
+\definecolor{rvwvcq}{rgb}{0.08235294117647059,0.396078431372549,0.7529411764705882}
+\definecolor{ccqqqq}{rgb}{0.8,0,0}
+\definecolor{qqqqff}{rgb}{0,0,1}
+\definecolor{wwwwww}{rgb}{0.4,0.4,0.4}
+\definecolor{qqwuqq}{rgb}{0,0.39215686274509803,0}
+\definecolor{uuuuuu}{rgb}{0.266,0.266,0.266}
+
+% Allows customization of titles
+% \usepackage{titlesec}
+% \titleformat{\section}[block]{\normalsize\scshape\bfseries{\arabic{section}.}}{}{1em}{}
+% \titleformat{\section}[block]{\normalsize\scshape\bfseries}{\thesection}{1em}{}
+% \titleformat*{\subsection}{\normalsize\scshape\itshape\bfseries}
+% \titleformat*{\subsubsection}{\smallsize\scshape\itshape}
+
+% \usepackage[hyphens]{url}
+%\usepackage[hyphens,spaces,obeyspaces]{url}
+% \usepackage[colorlinks,allcolors=blue]{hyperref}
+
+\usepackage{titlesec}
+
+\titleformat{\section}
+  {\normalfont\fontsize{14}{14}\selectfont\bfseries} % 14pt, interlineado 16pt
+  {\thesection.}{1em}{}
+
+% Subsection con tamaño de 12pt
+\titleformat{\subsection}
+  {\normalfont\fontsize{12}{14}\selectfont\bfseries} % 12pt, interlineado 16pt
+  {\thesubsection.}{1em}{}
+
+% Subsubsection con tamaño de 10pt
+\titleformat{\subsubsection}
+  {\normalfont\fontsize{10}{12}\selectfont\bfseries} % 10pt, interlineado 16pt
+  {\thesubsubsection.}{1em}{}
+
+% Manejo de enlaces
+\usepackage[colorlinks=true, linkcolor=black, citecolor=blue, urlcolor=blue]{hyperref}
+
+
+
+
+\setcounter{page}{\pagenum}
+\newcounter{ggbFirstpage}
+\setcounter{ggbFirstpage}{\pagenum}
+\pagestyle{empty}
+\setlength{\headheight}{14pt}
+\geometry{left=2cm,right=2cm,top=3cm,bottom=3cm}
+\pagestyle{fancyplain}                              
+
+\fancyhf{}
+\fancyhead[c]{\small \emph{IE0523: Sistemas Digitales II, Proyecto final - Grupo 2}}     %
+\cfoot{%                                            
+  \ifnum\value{ggbFirstpage}=\pagenum%              
+    {\vtop to\hsize{\hrule\vskip .2cm {\thepage}}}%   = the starting page number         %
+  \else\setcounter{ggbFirstpage}{\pagenum}\fi%      
+}                                                   
+
+\newcommand*{\TitleFont}{%
+      \usefont{\encodingdefault}{\rmdefault}{}{n}%
+      \fontsize{16}{18}%
+      \selectfont}
+
+\def\authorfont{\normalfont\fontsize{12}{14}\selectfont\centering}
+\def\subauthorfont{\normalfont\fontsize{10}{12}\selectfont\centering}
+\definecolor{wrwrwr}{rgb}{0.3803921568627451,0.3803921568627451,0.3803921568627451}
+\definecolor{sexdts}{rgb}{0.1803921568627451,0.49019607843137253,0.19607843137254902}
+\definecolor{rvwvcq}{rgb}{0.08235294117647059,0.396078431372549,0.7529411764705882}
+% \bibpunct[, ]{(}{)}{;}{a}{,}{,}
+
+
+%\usepackage{mfirstuc}
+% https://www.titlecase.com
+
+
+
+ 

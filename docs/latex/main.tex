@@ -1,0 +1,63 @@
+
+\def\pagenum{1}
+\def\vol{1}
+\def\issue{1}
+
+% ----------------------------- %
+\input{config/configs}
+\input{config/coding}
+% ----------------------------- &
+
+
+\usepackage{authblk}
+
+\def\thetitle{\scshape{\textbf{Proyecto final IE-0523}}\\\vspace{0.25cm}Implementación de la subcapa de codificación física (PCS) según la cláusula 36 del estándar IEEE 802.3}
+
+\def\authorOne{\authorfont{Daniel Alberto Sáenz Obando (C37099)},\\}
+\def\authorTwo{\authorfont{Brandon Daniel Jiménez Campos (C33972)},\\}
+\def\authorThree{\authorfont{Rodrigo Evelio Sánchez Araya (C37259)\\}}
+
+
+\begin{document}
+
+\interfootnotelinepenalty=100000
+
+% ----------------------------- %
+%  Header: Title, author
+% ----------------------------- %
+\title{\TitleFont{\thetitle}}
+\author{\authorOne\authorTwo \vspace{0.45cm}\authorThree}
+
+
+\vspace{-1mm}
+\date{Escuela de Ingeniería Eléctrica, Universidad de Costa Rica\\\vspace{0.5cm}Fecha: 06-12-2025}
+\maketitle
+
+
+
+% ----------------------------- %
+% Abstract
+% ----------------------------- %
+\input{contenido/0_resumen}
+\thispagestyle{fancy}
+
+
+% ----------------------------- %
+% Sections
+% ----------------------------- %
+\input{contenido/1_trabajo_realizado}
+\input{contenido/2_arquitectura}
+\input{contenido/3_pruebas}
+\input{contenido/4_instrucciones}
+\input{contenido/5_resultados}
+\input{contenido/6_conclusiones}
+
+
+% ----------------------------- %
+% References:  BibTeX
+% ----------------------------- %
+\bibliography{refs.bib}
+\bibliographystyle{IEEEtran}
+
+
+\end{document}
