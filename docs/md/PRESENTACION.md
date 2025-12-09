@@ -175,7 +175,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 <br>
 
 <p align="center">
-  <img src="images/prueba1_transmit.png" alt="Prueba transmit" width="100%">
+  <img src="images/prueba_1_transmit.png" alt="Prueba transmit" width="100%">
   <br>
   <em>Figura 2. Prueba del módulo TRANSMIT.</em>
 </p>
@@ -205,7 +205,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 <br>
 
 <p align="center">
-  <img src="images/Prueba_syncronization.jpeg" alt="Prueba Sync OK" width="100%">
+  <img src="images/prueba_sync.jpeg" alt="Prueba Sync OK" width="100%">
   <br>
   <em>Figura 4. Sincronización exitosa del módulo SYNCHRONIZATION.</em>
 </p>
@@ -214,7 +214,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 <br>
 
 <p align="center">
-  <img src="images/Prueba_sync_2.jpeg" alt="Prueba Sync Error" width="100%">
+  <img src="images/prueba_2_sync.jpeg" alt="Prueba Sync Error" width="100%">
   <br>
   <em>Figura 5. Detección de error en el módulo SYNCHRONIZATION.</em>
 </p>
@@ -252,7 +252,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 <br>
 
 <p align="center">
-  <img src="images/prueba1_receive.png" alt="Prueba Receive 1" width="100%">
+  <img src="images/prueba_1_receive.png" alt="Prueba Receive 1" width="100%">
   <br>
   <em>Figura 7. Prueba de recepción.</em>
 </p>
@@ -261,7 +261,7 @@ La estructura de los archivos del proyecto se muestra a continuación:
 <br>
 
 <p align="center">
-  <img src="images/prueba2_receive.png" alt="Prueba Receive 2" width="100%">
+  <img src="images/prueba_2_receive.png" alt="Prueba Receive 2" width="100%">
   <br>
   <em>Figura 8. No se encuentra sincronizado.</em>
 </p>
@@ -286,13 +286,13 @@ La estructura de los archivos del proyecto se muestra a continuación:
 Como prueba se utilizó un tester similar al del transmisor, ya que este es el que genera los code groups.
 
 <p align="center">
-  <img src="images/prueba1_complete.png" alt="Prueba PCS 1" width="100%">
+  <img src="images/prueba_1_complete.png" alt="Prueba PCS 1" width="100%">
   <br>
   <em>Figura 9. Prueba loopback y sincronización.</em>
 </p>
 
 <p align="center">
-  <img src="images/prueba2_complete.png" alt="Prueba PCS 2" width="100%">
+  <img src="images/prueba_2_complete.png" alt="Prueba PCS 2" width="100%">
   <br>
   <em>Figura 10. Prueba loopback con los 20 code-groups seleccionados.</em>
 </p>
