@@ -34,7 +34,7 @@ Específicamente, se implementaron las siguientes máquinas de estado:
 - [`RECEIVE`](docs/md/RECEIVE.md)
 - [`SYNCHRONIZATION`](docs/md/SYNCHRONIZATION.md)
 
-Estas fueron conectados en una estructura _loopback_ para la realización de las pruebas conjuntas.
+Estos fueron conectados en una estructura _loopback_ para la realización de las pruebas conjuntas.
 
 ### Estructura del proyecto
 
