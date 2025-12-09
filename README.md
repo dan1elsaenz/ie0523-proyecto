@@ -8,16 +8,33 @@ En este repositorio se encuentra el proyecto del curso de **IE0523: Sistemas Dig
 | Brandon Daniel Jiménez Campos | C33972 |
 | Rodrigo Evelio Sánchez Araya  | C37259 |
 
+### Instrucciones de uso
+
+> [!NOTE]
+> Ejecute los comandos desde la raíz del repositorio.
+
+Para la ejecución de la simulación para la PCS completa, utilice el comando:
+
+```sh
+make
+```
+
+Para la simulación de un submódulo específico, utilice:
+
+```sh
+make [transmit|sync|receive]
+```
+
 ### Descripción
 
 El proyecto consiste de la implementación de la capa PCS (_Physical Coding Sublayer_) para 1000BASE-X (Capa física para 1 Gb/s), desarrollado a partir de la cláusula 36 del estándar IEEE 802.3.
 Específicamente, se implementaron las siguientes máquinas de estado:
 
-- [`TRANSMIT`](docs/TRANSMIT.md)
-- [`RECEIVE`](docs/RECEIVE.md)
-- [`SYNCHRONIZATION`](docs/SYNCHRONIZATION.md)
+- [`TRANSMIT`](docs/md/TRANSMIT.md)
+- [`RECEIVE`](docs/md/RECEIVE.md)
+- [`SYNCHRONIZATION`](docs/md/SYNCHRONIZATION.md)
 
-Estas serán conectadas en una estructura _loopback_ para la realización de las pruebas conjuntas.
+Estas fueron conectados en una estructura _loopback_ para la realización de las pruebas conjuntas.
 
 ### Estructura del proyecto
 
