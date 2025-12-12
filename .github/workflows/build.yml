@@ -1,0 +1,61 @@
+name: Build LaTeX PDF and deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'docs/latex/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build PDF from docs/latex
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: main.tex
+          working_directory: docs/latex
+
+      - name: Prepare output for site
+        run: |
+          mkdir -p out
+          cp docs/latex/main.pdf out/reporte.pdf
+
+          mkdir -p _site
+          cp out/reporte.pdf _site/reporte.pdf
+
+      - name: Upload build artifact (PDF)
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-pdf
+          path: out/reporte.pdf
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
