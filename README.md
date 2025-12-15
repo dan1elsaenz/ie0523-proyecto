@@ -8,6 +8,8 @@ En este repositorio se encuentra el proyecto del curso de **IE0523: Sistemas Dig
 | Brandon Daniel Jiménez Campos | C33972 |
 | Rodrigo Evelio Sánchez Araya  | C37259 |
 
+> Para acceder al informe realizado, ingrese a [este enlace](https://dan1elsaenz.github.io/ie0523-proyecto/reporte.pdf).
+
 ### Instrucciones de uso
 
 > [!NOTE]
